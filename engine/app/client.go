@@ -8,9 +8,9 @@ import (
 	"quando/engine/front_end/analyser"
 )
 
-var callPipe *chan string
+var callPipe *chan map[string]interface{}
 
-func runScript(script string, callPipe *chan string) {
+func runScript(script string, callPipe *chan map[string]interface{}) {
 	codeAnalyser := analyser.NewAnalyser(script)
 	essence := codeAnalyser.Scan()
 	essence.ConnectCallPipe(callPipe)
@@ -35,7 +35,7 @@ func readScript(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func Listen(channel *chan string) {
+func Listen(channel *chan map[string]interface{}) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/script", readScript)
 	callPipe = channel

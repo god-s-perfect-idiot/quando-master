@@ -10,7 +10,8 @@ func RunNode(node *structures.CallNode, essence *structures.Essence) {
 		//	//
 		//case "action":
 		node.Method.Call(node.Definition.Signature.Parameters, essence)
-		for _, child := range node.Children {
+		// TODO FIX ME
+		for _, child := range node.MainChildren {
 			RunNode(child, essence)
 		}
 	}

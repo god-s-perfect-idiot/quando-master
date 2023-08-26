@@ -2,6 +2,7 @@ package analyser
 
 import (
 	"strconv"
+	"strings"
 )
 
 func IsBooleanParameter(value string) bool {
@@ -28,4 +29,37 @@ func IsCallbackParameter(value string) bool {
 
 func IsVal(value string) bool {
 	return value == "val"
+}
+
+func FindLineType(line []string) string {
+	if IsInvocation(line) {
+		return "invocation"
+	} else if IsCallbackTerminator(line) {
+		return "callbackTerminator"
+	} else if IsConditionalCallback(line) {
+		return "conditionalCallback"
+	} else {
+		return "lineBreak"
+	}
+}
+
+func IsInvocation(line []string) bool {
+	if strings.Contains(line[0], "quando.") {
+		return true
+	}
+	return false
+}
+
+func IsCallbackTerminator(line []string) bool {
+	if len(line) == 1 && line[0] == "}" {
+		return true
+	}
+	return false
+}
+
+func IsConditionalCallback(line []string) bool {
+	if len(line) == 3 && line[0] == "}" && line[1] == "callback" && line[2] == "{" {
+		return true
+	}
+	return false
 }

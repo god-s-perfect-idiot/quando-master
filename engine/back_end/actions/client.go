@@ -19,5 +19,6 @@ func (c *Client) GetActions() []structures.Method {
 func NewClient() *Client {
 	client := &Client{}
 	client.AddActions(GetKeyboardActions())
+	client.AddActions(GetLoggerActions())
 	return client
 }

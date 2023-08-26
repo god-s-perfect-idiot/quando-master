@@ -72,12 +72,14 @@ func (l *Analyser) ConsumeCharacter() byte {
 
 func (l *Analyser) tokenize() *structures.Definition {
 	words := l.scanner.split()
-	if len(words) == 0 {
+	switch FindLineType(words) {
+	case "lineBreak":
 		return structures.NewLineBreak(l.cursor.getL())
-	}
-	if len(words) == 1 {
+	case "callbackTerminator":
 		return structures.NewCallbackterminator(l.cursor.getL())
-	} else {
+	case "conditionalCallback":
+		return structures.NewConditionalCallback(l.cursor.getL())
+	case "invocation":
 		methodIdentifier := words[0]
 		var parameters []structures.Parameter
 		hasCallback := false
@@ -96,8 +98,8 @@ func (l *Analyser) tokenize() *structures.Definition {
 			} else if IsVal(value) {
 				type_ = Tokens[VAL]
 			} else if IsCallbackParameter(value) {
-				type_ = Tokens[CALLBACK]
 				hasCallback = true
+				continue
 			}
 			parameter := structures.Parameter{
 				Identifier: key,
@@ -108,6 +110,8 @@ func (l *Analyser) tokenize() *structures.Definition {
 		}
 		callSignature := structures.NewCallSignature(methodIdentifier, parameters, hasCallback)
 		return structures.NewInvocation(*callSignature, l.cursor.getL())
+	default:
+		return nil
 	}
 }
 

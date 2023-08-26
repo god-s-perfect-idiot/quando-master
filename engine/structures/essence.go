@@ -10,7 +10,12 @@ type Essence struct {
 	Invocations     *InvocationTable
 	DependencyGraph *CallGraph
 	Val             float64
-	CallPipe        *chan string
+	CallPipe        *chan map[string]interface{}
+}
+
+type CallData struct {
+	Route string
+	Body  []byte
 }
 
 func NewExecutionContext(invocations InvocationTable, dependencyGraph CallGraph) *Essence {
@@ -24,6 +29,6 @@ func NewExecutionContext(invocations InvocationTable, dependencyGraph CallGraph)
 	}
 }
 
-func (e *Essence) ConnectCallPipe(channel *chan string) {
+func (e *Essence) ConnectCallPipe(channel *chan map[string]interface{}) {
 	e.CallPipe = channel
 }

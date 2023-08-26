@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	engine "quando/engine/app"
 	"quando/internal/config"
 	"quando/internal/server"
@@ -9,6 +10,15 @@ import (
 )
 
 var handlers = []server.Handler{} // extra handlers are added when running full version
+
+func fetchHandler(route string) server.Handler {
+	for _, handler := range handlers {
+		if handler.Url == route {
+			return handler
+		}
+	}
+	return server.Handler{}
+}
 
 func runServer() {
 	fmt.Println("Quando Go Server started")
@@ -22,20 +32,31 @@ func runServer() {
 	server.ServeHTTPandIO(handlers)
 }
 
-func runEngine() {
-	callPipe := make(chan string)
+func main() {
+
+	callPipe := make(chan map[string]interface{})
+
+	length := len(handlers)
+	println("handlers length: ", length)
 	go engine.Listen(&callPipe)
+	go runServer()
+
+	fmt.Println("Go listener running for engine -> server in main thread")
+
+	mux := http.NewServeMux()
+
+	for _, handler := range handlers {
+		mux.HandleFunc(handler.Url, handler.Func)
+	}
 
 	for {
 		select {
-		case call := <-callPipe:
-			println("Received call: ", call)
+		case callData := <-callPipe:
+			route := callData["route"].(string)
+			println("Received call: ", callData["route"].(string), callData["body"])
+			println("Received")
+			handler := fetchHandler(route)
+			println("Handler: ", handler.Url)
 		}
 	}
-
-}
-
-func main() {
-	go runEngine()
-	runServer()
 }

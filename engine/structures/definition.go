@@ -24,6 +24,13 @@ func NewCallbackterminator(lineCount int) *Definition {
 	}
 }
 
+func NewConditionalCallback(lineCount int) *Definition {
+	return &Definition{
+		Type: "conditional callback",
+		Line: lineCount,
+	}
+}
+
 func NewInvocation(signature CallSignature, lineCount int) *Definition {
 	return &Definition{
 		Type:      "invocation",
