@@ -12,7 +12,7 @@ func TestNewLogger(t *testing.T) {
 func TestLoggerClient_Log(t *testing.T) {
 	l := NewLogger()
 	params := map[string]interface{}{
-		"message": "test",
+		"text": "test",
 	}
 	val := l.Log(params)
 	if val != 0.0 {

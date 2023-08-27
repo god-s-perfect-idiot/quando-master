@@ -2,8 +2,8 @@ package core
 
 import (
 	"quando/engine/back_end/actions"
+	"quando/engine/back_end/devices"
 	"quando/engine/back_end/generator"
-	"quando/engine/devices"
 	"quando/engine/front_end/analyser"
 )
 

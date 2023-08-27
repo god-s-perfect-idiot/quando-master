@@ -58,6 +58,44 @@ var callgraphDefinitionsWithChild = []Definition{
 	},
 }
 
+var callgraphDefinitionsWithConditionalCallback = []Definition{
+	Definition{
+		Line: 0,
+		Signature: CallSignature{
+			MethodIdentifier: "test",
+			Parameters:       make([]Parameter, 0),
+			HasCallback:      true,
+		},
+		Type: "invocation",
+	},
+	Definition{
+		Line: 1,
+		Signature: CallSignature{
+			MethodIdentifier: "test",
+			Parameters:       make([]Parameter, 0),
+		},
+		Type: "invocation",
+	},
+	Definition{
+		Line:      2,
+		Signature: CallSignature{},
+		Type:      "conditional callback",
+	},
+	Definition{
+		Line: 3,
+		Signature: CallSignature{
+			MethodIdentifier: "test",
+			Parameters:       make([]Parameter, 0),
+		},
+		Type: "invocation",
+	},
+	Definition{
+		Line:      4,
+		Signature: CallSignature{},
+		Type:      "callback terminator",
+	},
+}
+
 func TestSingleDAG(t *testing.T) {
 	callgraph := ConstructCallGraph(callgraphDefinitions)
 	if callgraph.Roots == nil {
@@ -82,10 +120,10 @@ func TestSingleDAGWithChild(t *testing.T) {
 	if callgraph.Roots[0].identifier != "0:callback:test" {
 		t.Error("ConstructCallGraph() should return root with identifier test")
 	}
-	if len(callgraph.Roots[0].Children) != 1 {
+	if len(callgraph.Roots[0].MainChildren) != 1 {
 		t.Error("ConstructCallGraph() should return root with one child")
 	}
-	if callgraph.Roots[0].Children[0].identifier != "1:action:test" {
+	if callgraph.Roots[0].MainChildren[0].identifier != "1:action:test" {
 		t.Error("ConstructCallGraph() should return root with child with identifier test")
 	}
 }
@@ -110,6 +148,31 @@ func TestMultiDAG(t *testing.T) {
 	}
 	if callgraph.Roots[1].identifier != "1:action:test" {
 		t.Error("ConstructCallGraph() should return root with identifier test")
+	}
+}
+
+func TestConditionalCallback(t *testing.T) {
+	callgraph := ConstructCallGraph(callgraphDefinitionsWithConditionalCallback)
+	if callgraph.Roots == nil {
+		t.Error("ConstructCallGraph() should not return nil roots")
+	}
+	if len(callgraph.Roots) != 1 {
+		t.Error("ConstructCallGraph() should return one root")
+	}
+	if callgraph.Roots[0].identifier != "0:callback:test" {
+		t.Error("ConstructCallGraph() should return root with identifier test")
+	}
+	if len(callgraph.Roots[0].MainChildren) != 1 {
+		t.Error("ConstructCallGraph() should return root with one child")
+	}
+	if callgraph.Roots[0].MainChildren[0].identifier != "1:action:test" {
+		t.Error("ConstructCallGraph() should return root with child with identifier test")
+	}
+	if len(callgraph.Roots[0].AltChildren) != 1 {
+		t.Error("ConstructCallGraph() should return root with one child")
+	}
+	if callgraph.Roots[0].AltChildren[0].identifier != "3:action:test" {
+		t.Error("ConstructCallGraph() should return root with child with identifier test")
 	}
 }
 

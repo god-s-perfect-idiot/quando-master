@@ -2,7 +2,7 @@ package generator
 
 import (
 	"quando/engine/back_end/actions"
-	"quando/engine/devices"
+	"quando/engine/back_end/devices"
 	"quando/engine/front_end/analyser"
 	"quando/engine/structures"
 )

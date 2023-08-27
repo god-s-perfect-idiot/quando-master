@@ -29,9 +29,6 @@ func (m *Method) Call(parameters []Parameter, essence *Essence) {
 	params["callPipe"] = essence.CallPipe
 	for _, parameter := range parameters {
 		// Only binding early now. Fetch val from context later
-		if parameter.Identifier == "callback" {
-			continue
-		}
 		parameter = m.cleanParam(parameter, essence)
 		if parameter.Value == "val" {
 			params[parameter.Identifier] = 0.5

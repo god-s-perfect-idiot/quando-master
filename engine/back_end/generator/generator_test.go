@@ -97,7 +97,7 @@ func TestGeneratorGenerateCode(t *testing.T) {
 	if essence.DependencyGraph.GetRoots()[0].Method.Identifier != "quando.testCallback" {
 		t.Error("Essence dependency graph should have quando.test as root")
 	}
-	if essence.DependencyGraph.GetRoots()[0].Children[0].Method.Identifier != "quando.testAction" {
+	if essence.DependencyGraph.GetRoots()[0].MainChildren[0].Method.Identifier != "quando.testAction" {
 		t.Error("Essence dependency graph should have quando.test as root")
 	}
 }

@@ -9,11 +9,21 @@ func RunNode(node *structures.CallNode, essence *structures.Essence) {
 		//case "callback":
 		//	//
 		//case "action":
+		switch node.Type {
+		case "action":
+			node.Method.Call(node.Definition.Signature.Parameters, essence)
+		case "callback":
+			node.Method.Call(node.Definition.Signature.Parameters, essence)
+			for _, child := range node.MainChildren {
+				RunNode(child, essence)
+			}
+		case "conditional callback":
+			// TODO Implement Conditional Callbacks
+			// Logic : Perform Main Child sequentially until condition
+			// Then switch to Alt Child and perform sequentially until condition resets
+		}
 		node.Method.Call(node.Definition.Signature.Parameters, essence)
 		// TODO FIX ME
-		for _, child := range node.MainChildren {
-			RunNode(child, essence)
-		}
 	}
 }
 

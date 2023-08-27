@@ -105,27 +105,3 @@ func TestCallWithVal(t *testing.T) {
 		t.Error("Method Call should return essence with val 0.5")
 	}
 }
-
-func TestCallWithSkippedCallback(t *testing.T) {
-	essence := Essence{}
-	param := Parameter{
-		Identifier: "callback",
-		Type:       "CALLBACK",
-		Value:      "{",
-	}
-	m := Method{
-		Identifier: "test",
-		Function: func(params map[string]interface{}) float64 {
-			if len(params) == 0 {
-				return 0.0
-			} else {
-				return 0.1
-			}
-		},
-		Type: "callback",
-	}
-	m.Call([]Parameter{param}, &essence)
-	if essence.Val != 0.0 {
-		t.Error("Method Call should return essence with val 0.0")
-	}
-}

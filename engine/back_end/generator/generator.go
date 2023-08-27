@@ -27,6 +27,11 @@ func (g *Generator) GenerateCode(essence structures.Essence) {
 			if valid {
 				essence.DependencyGraph.AttachMethod(api.Identifier, api)
 			}
+		case "conditional callback":
+			api, valid := g.Lookups.Callbacks.GetAPI(invocation.Signature.MethodIdentifier)
+			if valid {
+				essence.DependencyGraph.AttachMethod(api.Identifier, api)
+			}
 		default:
 			continue
 		}

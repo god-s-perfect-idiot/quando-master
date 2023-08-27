@@ -32,15 +32,24 @@ func IsVal(value string) bool {
 }
 
 func FindLineType(line []string) string {
-	if IsInvocation(line) {
+	if IsLineBreak(line) {
+		return "lineBreak"
+	} else if IsInvocation(line) {
 		return "invocation"
 	} else if IsCallbackTerminator(line) {
 		return "callbackTerminator"
 	} else if IsConditionalCallback(line) {
 		return "conditionalCallback"
 	} else {
-		return "lineBreak"
+		return "unknown"
 	}
+}
+
+func IsLineBreak(line []string) bool {
+	if len(line) == 0 {
+		return true
+	}
+	return false
 }
 
 func IsInvocation(line []string) bool {
