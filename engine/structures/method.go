@@ -30,11 +30,7 @@ func (m *Method) Call(parameters []Parameter, essence *Essence) {
 	for _, parameter := range parameters {
 		// Only binding early now. Fetch val from context later
 		parameter = m.cleanParam(parameter, essence)
-		if parameter.Value == "val" {
-			params[parameter.Identifier] = 0.5
-		} else {
-			params[parameter.Identifier] = parameter.Value
-		}
+		params[parameter.Identifier] = parameter.Value
 	}
 	val := m.Function.(func(map[string]interface{}) float64)(params)
 	if m.Type == "callback" {

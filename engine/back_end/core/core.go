@@ -5,10 +5,6 @@ import "quando/engine/structures"
 func RunNode(node *structures.CallNode, essence *structures.Essence) {
 	essence.CallStack.Push(node)
 	if node.Method.Identifier != "" {
-		//switch node.Method.Type {
-		//case "callback":
-		//	//
-		//case "action":
 		switch node.Type {
 		case "action":
 			node.Method.Call(node.Definition.Signature.Parameters, essence)
@@ -22,8 +18,6 @@ func RunNode(node *structures.CallNode, essence *structures.Essence) {
 			// Logic : Perform Main Child sequentially until condition
 			// Then switch to Alt Child and perform sequentially until condition resets
 		}
-		node.Method.Call(node.Definition.Signature.Parameters, essence)
-		// TODO FIX ME
 	}
 }
 
