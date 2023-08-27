@@ -36,26 +36,42 @@ func (s *Scanner) readLine() bool {
 }
 
 func (s *Scanner) split() []string {
-	delimiters := []string{" ", ", ", "="}
-	parts := make([]string, 0)
-	startIdx := 0
-	for i := 0; i < len(s.line); i++ {
-		for _, delimiter := range delimiters {
-			delimiterLen := len(delimiter)
-			if i+delimiterLen <= len(s.line) && s.line[i:i+delimiterLen] == delimiter {
-				if i > startIdx {
-					parts = append(parts, s.line[startIdx:i])
+	var tokens []string
+	currentToken := ""
+	inQuotes := false
+
+	input := s.getLine()
+	for i := 0; i < len(input); i++ {
+		char := input[i]
+
+		if char == '"' {
+			inQuotes = !inQuotes
+			currentToken += string(char)
+		} else if inQuotes {
+			currentToken += string(char)
+		} else {
+			if strings.ContainsRune(" =", rune(char)) {
+				if currentToken != "" {
+					tokens = append(tokens, currentToken)
+					currentToken = ""
 				}
-				i += delimiterLen - 1
-				startIdx = i + 1
-				break
+			} else if i < len(input)-1 && char == ',' && input[i+1] == ' ' {
+				if currentToken != "" {
+					tokens = append(tokens, currentToken)
+					currentToken = ""
+				}
+				i++ // Skip the space after the comma
+			} else {
+				currentToken += string(char)
 			}
 		}
 	}
-	if startIdx < len(s.line) {
-		parts = append(parts, s.line[startIdx:])
+
+	if currentToken != "" {
+		tokens = append(tokens, currentToken)
 	}
-	return parts
+
+	return tokens
 }
 
 // base class overrides

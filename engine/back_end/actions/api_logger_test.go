@@ -14,7 +14,7 @@ func TestLoggerClient_Log(t *testing.T) {
 	params := map[string]interface{}{
 		"text": "test",
 	}
-	val := l.Log(params)
+	val, _ := l.Log(params)
 	if val != 0.0 {
 		t.Error("Log() should return 0.0")
 	}

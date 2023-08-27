@@ -15,6 +15,8 @@ func GetKeyboardActions() []structures.Method {
 			Identifier: "quando.control.key",
 			Function:   keyboardClient.Key,
 			Type:       "action",
+			Iterator:   false,
+			Arbiter:    false,
 		},
 	}
 }
@@ -23,13 +25,13 @@ func NewKeyboard() *KeyboardClient {
 	return &KeyboardClient{}
 }
 
-func (k *KeyboardClient) Key(params map[string]interface{}) float64 {
+func (k *KeyboardClient) Key(params map[string]interface{}) (float64, map[string]interface{}) {
 	ch := params["ch"].(string)
 	upDown := params["upDown"].(string)
 	onOff := params["onOff"].(float64)
 	callPipe := params["callPipe"].(*chan map[string]interface{})
 	k.key(ch, upDown, onOff, callPipe)
-	return 0.0
+	return 0.0, nil
 }
 
 func (k *KeyboardClient) key(ch string, upDown string, onOff float64, callPipe *chan map[string]interface{}) {

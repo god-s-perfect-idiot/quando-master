@@ -3,7 +3,6 @@ package devices
 import "quando/engine/structures"
 
 type Client struct {
-	//Devices []Device
 	Methods []structures.Method
 }
 
@@ -18,18 +17,9 @@ func (c *Client) GetCallbacks() []structures.Method {
 }
 
 func NewClient() *Client {
-	//keyboardDevice := NewDevice(TypeKeyboard, "keyboard", nil)
-	client := &Client{
-		//Devices: []Device{
-		//	keyboardDevice,
-		//},
-	}
+	client := &Client{}
 	client.AddCallbacks(GetKeyboardCallbacks())
+	client.AddCallbacks(GetTimerCallbacks())
+	client.AddCallbacks(GetPickerCallbacks())
 	return client
 }
-
-//func (c *Client) Run() {
-//	for _, device := range c.Devices {
-//		device.ListenAll()
-//	}
-//}
