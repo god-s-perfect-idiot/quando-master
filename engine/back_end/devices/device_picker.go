@@ -9,7 +9,7 @@ func GetPickerCallbacks() []structures.Method {
 	return []structures.Method{
 		structures.Method{
 			Identifier: "quando.pick.random",
-			Function:   Random,
+			Function:   PickRandom,
 			Type:       "callback",
 			Iterator:   false,
 			Arbiter:    true,
@@ -19,6 +19,13 @@ func GetPickerCallbacks() []structures.Method {
 			Function:   PickEvery,
 			Type:       "callback",
 			Iterator:   true,
+			Arbiter:    true,
+		},
+		structures.Method{
+			Identifier: "quando.pick.one",
+			Function:   PickOne,
+			Type:       "callback",
+			Iterator:   false,
 			Arbiter:    true,
 		},
 	}
@@ -33,7 +40,7 @@ func PickEvery(params map[string]interface{}) (float64, map[string]interface{}) 
 	// Is this a good idea?
 	// pioneered Inter-device communication
 	after(duration)
-	selection := pickEvery(nodeCount, keys)
+	selection := pickNext(nodeCount, keys)
 	keys = []int{selection}
 	data := make(map[string]interface{})
 	data["keys"] = keys
@@ -41,7 +48,7 @@ func PickEvery(params map[string]interface{}) (float64, map[string]interface{}) 
 	return 0.0, data
 }
 
-func Random(params map[string]interface{}) (float64, map[string]interface{}) {
+func PickRandom(params map[string]interface{}) (float64, map[string]interface{}) {
 	nodeCount := params["nodeCount"].(int)
 	pickType := params["type"].(string)
 	keys := params["keys"].([]int)
@@ -69,7 +76,35 @@ func Random(params map[string]interface{}) (float64, map[string]interface{}) {
 	return 0.0, data
 }
 
-func pickEvery(nodeCount int, keys []int) int {
+func PickOne(params map[string]interface{}) (float64, map[string]interface{}) {
+	nodeCount := params["nodeCount"].(int)
+	keys := params["keys"].([]int)
+	inverted := params["inverted"].(bool)
+	var selection int
+	if inverted {
+		selection = pickPrevious(nodeCount, keys)
+	} else {
+		selection = pickNext(nodeCount, keys)
+	}
+	keys = []int{selection}
+	data := make(map[string]interface{})
+	data["keys"] = keys
+	data["selection"] = selection
+	return 0.0, data
+}
+
+func pickPrevious(nodeCount int, keys []int) int {
+	if len(keys) == 0 {
+		return nodeCount - 1
+	}
+	index := keys[0] - 1
+	if index < 0 {
+		index = nodeCount - 1
+	}
+	return index
+}
+
+func pickNext(nodeCount int, keys []int) int {
 	if len(keys) == 0 {
 		return 0
 	}

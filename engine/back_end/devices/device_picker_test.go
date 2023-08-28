@@ -8,7 +8,7 @@ func TestRandom(t *testing.T) {
 	params["sequence"] = []int{1, 2, 3, 4, 5}
 	params["keys"] = []int{1}
 	params["nodeCount"] = 5
-	val, data := Random(params)
+	val, data := PickRandom(params)
 	if val != 0.0 {
 		t.Error("random() should return 0.0")
 	}
@@ -98,13 +98,71 @@ func TestPickEvery(t *testing.T) {
 	}
 }
 
-func TestPickEveryMethod(t *testing.T) {
+func TestPickNextMethod(t *testing.T) {
 	nodeCount := 5
 	keys := []int{1}
 	for i := 0; i < 100; i++ {
-		index := pickEvery(nodeCount, keys)
+		index := pickNext(nodeCount, keys)
 		if index != (keys[0]+1)%nodeCount {
 			t.Error("pickEvery() should return next index in sequence")
+		}
+		keys = append(keys, index)
+	}
+}
+
+func TestOneNext(t *testing.T) {
+	params := make(map[string]interface{})
+	params["keys"] = []int{1}
+	params["nodeCount"] = 5
+	params["inverted"] = false
+	val, data := PickOne(params)
+	if val != 0.0 {
+		t.Error("next() should return 0.0")
+	}
+	if data == nil {
+		t.Error("next() should return data")
+	}
+	if data["selection"] == nil {
+		t.Error("next() should return selection")
+	}
+	if data["keys"] == nil {
+		t.Error("next() should return keys")
+	}
+	if data["selection"].(int) < 0 || data["selection"].(int) > 4 {
+		t.Error("next() should return an index between 0 and 4")
+	}
+}
+
+func TestPickOneInverted(t *testing.T) {
+	params := make(map[string]interface{})
+	params["keys"] = []int{1}
+	params["nodeCount"] = 5
+	params["inverted"] = true
+	val, data := PickOne(params)
+	if val != 0.0 {
+		t.Error("next() should return 0.0")
+	}
+	if data == nil {
+		t.Error("next() should return data")
+	}
+	if data["selection"] == nil {
+		t.Error("next() should return selection")
+	}
+	if data["keys"] == nil {
+		t.Error("next() should return keys")
+	}
+	if data["selection"].(int) < 0 || data["selection"].(int) > 4 {
+		t.Error("next() should return an index between 0 and 4")
+	}
+}
+
+func TestPickPreviousMethod(t *testing.T) {
+	nodeCount := 5
+	keys := []int{1}
+	for i := 0; i < 100; i++ {
+		index := pickPrevious(nodeCount, keys)
+		if index != keys[0]-1 {
+			t.Error("pickPrevious() should return previous index in sequence")
 		}
 		keys = append(keys, index)
 	}
