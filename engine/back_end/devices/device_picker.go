@@ -28,6 +28,13 @@ func GetPickerCallbacks() []structures.Method {
 			Iterator:   false,
 			Arbiter:    true,
 		},
+		structures.Method{
+			Identifier: "quando.pick.val",
+			Function:   PickVal,
+			Type:       "callback",
+			Iterator:   false,
+			Arbiter:    true,
+		},
 	}
 }
 
@@ -45,7 +52,7 @@ func PickEvery(params map[string]interface{}) (float64, map[string]interface{}) 
 	data := make(map[string]interface{})
 	data["keys"] = keys
 	data["selection"] = selection
-	return 0.0, data
+	return -1.0, data
 }
 
 func PickRandom(params map[string]interface{}) (float64, map[string]interface{}) {
@@ -73,7 +80,7 @@ func PickRandom(params map[string]interface{}) (float64, map[string]interface{})
 	data := make(map[string]interface{})
 	data["keys"] = keys
 	data["selection"] = selection
-	return 0.0, data
+	return -1.0, data
 }
 
 func PickOne(params map[string]interface{}) (float64, map[string]interface{}) {
@@ -90,7 +97,16 @@ func PickOne(params map[string]interface{}) (float64, map[string]interface{}) {
 	data := make(map[string]interface{})
 	data["keys"] = keys
 	data["selection"] = selection
-	return 0.0, data
+	return -1.0, data
+}
+
+func PickVal(params map[string]interface{}) (float64, map[string]interface{}) {
+	nodeCount := params["nodeCount"].(int)
+	val := params["val"].(float64)
+	selection := valNext(val, nodeCount)
+	data := make(map[string]interface{})
+	data["selection"] = selection
+	return -1.0, data
 }
 
 func pickPrevious(nodeCount int, keys []int) int {
@@ -102,6 +118,14 @@ func pickPrevious(nodeCount int, keys []int) int {
 		index = nodeCount - 1
 	}
 	return index
+}
+
+func valNext(val float64, nodeCount int) int {
+	sectionIndex := int(val * float64(nodeCount))
+	if sectionIndex >= nodeCount {
+		sectionIndex = nodeCount - 1
+	}
+	return sectionIndex
 }
 
 func pickNext(nodeCount int, keys []int) int {

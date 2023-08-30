@@ -24,7 +24,7 @@ var definitions = []structures.Definition{
 }
 var callgraph = structures.ConstructCallGraph(definitions)
 var invocations = structures.GenerateInvocationTable(definitions)
-var essence = structures.Essence{
+var essence = structures.Executable{
 	DependencyGraph: &callgraph,
 	Invocations:     &invocations,
 	CallStack:       structures.NewStack(),
@@ -50,7 +50,7 @@ func TestExecute(t *testing.T) {
 	essence.DependencyGraph.AttachMethod("dummy", mockedAPIDummy1)
 	Execute(&essence)
 	if essence.Val != 0.1111 {
-		t.Error("Essence should have val 0.1111")
+		t.Error("Executable should have val 0.1111")
 	}
 }
 
@@ -59,6 +59,6 @@ func TestRunNode(t *testing.T) {
 	node.Method = mockedAPIDummy2
 	RunNode(node, &essence)
 	if essence.Val != 0.2222 {
-		t.Error("Essence should have val 0.2222")
+		t.Error("Executable should have val 0.2222")
 	}
 }

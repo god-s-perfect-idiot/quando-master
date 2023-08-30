@@ -6,13 +6,15 @@ import (
 )
 
 type Scanner struct {
-	scanner *bufio.Scanner
-	line    string
+	scanner    *bufio.Scanner
+	line       string
+	sourceCode string
 }
 
 func NewScanner(source string) *Scanner {
 	return &Scanner{
-		scanner: bufio.NewScanner(strings.NewReader(source)),
+		scanner:    bufio.NewScanner(strings.NewReader(source)),
+		sourceCode: source,
 	}
 }
 

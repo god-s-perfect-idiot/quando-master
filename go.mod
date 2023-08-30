@@ -3,9 +3,11 @@ module quando // N.B. This will never be a module
 go 1.17
 
 require (
-	github.com/eiannone/keyboard v0.0.0-20220611211555-0d226195f203
+	github.com/fstanis/screenresolution v0.0.0-20190527020317-869904d15333
 	github.com/getlantern/systray v1.2.1
 	github.com/go-vgo/robotgo v0.100.10
+	github.com/robotn/gohook v0.31.3
+	github.com/shomali11/util v0.0.0-20220717175126-f0771b70947f
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/zserge/lorca v0.1.10
 	go.bug.st/serial v1.3.5
@@ -26,7 +28,6 @@ require (
 	github.com/lxn/win v0.0.0-20210218163916-a377121e959e // indirect
 	github.com/otiai10/gosseract v2.2.1+incompatible // indirect
 	github.com/oxtoacart/bpool v0.0.0-20190530202638-03653db5a59c // indirect
-	github.com/robotn/gohook v0.31.3 // indirect
 	github.com/robotn/xgb v0.0.0-20190912153532-2cb92d044934 // indirect
 	github.com/robotn/xgbutil v0.0.0-20190912154524-c861d6f87770 // indirect
 	github.com/shirou/gopsutil v3.21.10+incompatible // indirect
@@ -37,5 +38,5 @@ require (
 	github.com/vcaesar/keycode v0.10.0 // indirect
 	github.com/vcaesar/tt v0.20.0 // indirect
 	golang.org/x/image v0.0.0-20211028202545-6944b10bf410 // indirect
-	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
+	golang.org/x/sys v0.0.0-20220712014510-0a85c31ab51e // indirect
 )

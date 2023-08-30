@@ -21,5 +21,6 @@ func NewClient() *Client {
 	client.AddCallbacks(GetKeyboardCallbacks())
 	client.AddCallbacks(GetTimerCallbacks())
 	client.AddCallbacks(GetPickerCallbacks())
+	client.AddCallbacks(GetMouseCallbacks())
 	return client
 }

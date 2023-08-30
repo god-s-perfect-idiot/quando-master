@@ -3,7 +3,7 @@ package structures
 import "testing"
 
 func TestCleanStringParam(t *testing.T) {
-	essence := Essence{}
+	essence := Executable{}
 	param := Parameter{
 		Identifier: "test",
 		Type:       "STRING",
@@ -17,7 +17,7 @@ func TestCleanStringParam(t *testing.T) {
 }
 
 func TestCleanBooleanParam(t *testing.T) {
-	essence := Essence{}
+	essence := Executable{}
 	param := Parameter{
 		Identifier: "test",
 		Type:       "BOOLEAN",
@@ -31,7 +31,7 @@ func TestCleanBooleanParam(t *testing.T) {
 }
 
 func TestCleanNumberParam(t *testing.T) {
-	essence := Essence{}
+	essence := Executable{}
 	param := Parameter{
 		Identifier: "test",
 		Type:       "NUMBER",
@@ -45,7 +45,7 @@ func TestCleanNumberParam(t *testing.T) {
 }
 
 func TestCleanValParam(t *testing.T) {
-	essence := Essence{
+	essence := Executable{
 		Val: 0.5,
 	}
 	param := Parameter{
@@ -79,7 +79,7 @@ func TestIsArbiter(t *testing.T) {
 }
 
 func TestCall(t *testing.T) {
-	essence := Essence{}
+	essence := Executable{}
 	param := Parameter{
 		Identifier: "test",
 		Type:       "NUMBER",
@@ -99,7 +99,7 @@ func TestCall(t *testing.T) {
 }
 
 func TestCallWithVal(t *testing.T) {
-	essence := Essence{
+	essence := Executable{
 		Val: 0.5,
 	}
 	param := Parameter{
@@ -125,7 +125,7 @@ func TestCallWithVal(t *testing.T) {
 }
 
 func TestCallWithValAndData(t *testing.T) {
-	essence := Essence{
+	essence := Executable{
 		Val:  0.5,
 		Data: make(map[string]interface{}),
 	}

@@ -4,7 +4,8 @@ import (
 	"context"
 )
 
-type Essence struct {
+type Executable struct {
+	Hash            string
 	Context         context.Context
 	CallStack       *Stack
 	Invocations     *InvocationTable
@@ -19,31 +20,33 @@ type CallData struct {
 	Body  []byte
 }
 
-func NewExecutionContext(invocations InvocationTable, dependencyGraph CallGraph) *Essence {
+func NewExecutionContext(hash string, invocations InvocationTable, dependencyGraph CallGraph) *Executable {
 	scriptContext := context.Background()
 	callStack := NewStack()
-	return &Essence{
+	return &Executable{
+		Hash:            hash,
 		Context:         scriptContext,
 		CallStack:       callStack,
 		Invocations:     &invocations,
 		DependencyGraph: &dependencyGraph,
 		Data:            make(map[string]interface{}),
+		Val:             0.5,
 	}
 }
 
-func (e *Essence) ConnectCallPipe(channel *chan map[string]interface{}) {
+func (e *Executable) ConnectCallPipe(channel *chan map[string]interface{}) {
 	e.CallPipe = channel
 }
 
-func (e *Essence) SetData(key string, value interface{}) {
+func (e *Executable) SetData(key string, value interface{}) {
 	e.Data[key] = value
 }
 
-func (e *Essence) GetData(key string) interface{} {
+func (e *Executable) GetData(key string) interface{} {
 	return e.Data[key]
 }
 
-func (e *Essence) ValidateData(key string) bool {
+func (e *Executable) ValidateData(key string) bool {
 	_, ok := e.Data[key]
 	return ok
 }

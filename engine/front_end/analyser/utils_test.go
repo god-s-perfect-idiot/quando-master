@@ -63,6 +63,9 @@ func TestIsFloat(t *testing.T) {
 	if IsFloatParameter("0.0false") {
 		t.Error("IsFloatParameter() should return false")
 	}
+	if !IsFloatParameter("0.01") {
+		t.Error("IsFloatParameter() should return true")
+	}
 }
 
 func TestIsString(t *testing.T) {

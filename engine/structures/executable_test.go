@@ -5,7 +5,7 @@ import "testing"
 func TestNewExecutionContext(t *testing.T) {
 	i := InvocationTable{}
 	g := CallGraph{}
-	e := NewExecutionContext(i, g)
+	e := NewExecutionContext("", i, g)
 	if e == nil {
 		t.Error("NewExecutionContext() should not return nil")
 	}
@@ -14,7 +14,7 @@ func TestNewExecutionContext(t *testing.T) {
 func TestNewExecutionContextControls(t *testing.T) {
 	i := InvocationTable{}
 	g := CallGraph{}
-	e := NewExecutionContext(i, g)
+	e := NewExecutionContext("", i, g)
 	if e.Context == nil {
 		t.Error("Context should not be nil")
 	}
@@ -27,7 +27,7 @@ func TestNewExecutionContextControls(t *testing.T) {
 	if e.DependencyGraph == nil {
 		t.Error("DependencyGraph should not be nil")
 	}
-	if e.Val != 0 {
-		t.Error("Val should be 0")
+	if e.Val != 0.5 {
+		t.Error("Val should be 0.5")
 	}
 }

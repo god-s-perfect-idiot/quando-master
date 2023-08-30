@@ -20,6 +20,7 @@ const (
 	// Literals
 	STRING
 	NUMBER
+	FLOAT
 	BOOLEAN
 	CALLBACK
 	VAL
@@ -45,6 +46,7 @@ var Tokens = []string{
 	NUMBER:      "NUMBER",
 	BOOLEAN:     "BOOLEAN",
 	CALLBACK:    "CALLBACK",
+	FLOAT:       "FLOAT",
 	VAL:         "VAL",
 	COMMA:       ",",
 	OPEN_BRACE:  "{",
@@ -92,7 +94,7 @@ func (l *Analyser) tokenize() *structures.Definition {
 			} else if IsIntegerParameter(value) {
 				type_ = Tokens[NUMBER]
 			} else if IsFloatParameter(value) {
-				type_ = Tokens[NUMBER]
+				type_ = Tokens[FLOAT]
 			} else if IsStringParameter(value) {
 				type_ = Tokens[STRING]
 			} else if IsVal(value) {
@@ -115,7 +117,7 @@ func (l *Analyser) tokenize() *structures.Definition {
 	}
 }
 
-func (l *Analyser) Scan() *structures.Essence {
+func (l *Analyser) Scan() *structures.Executable {
 	definitions := make([]structures.Definition, 0)
 	for l.scanner.Scan() {
 		if err := l.scanner.Err(); err != nil {
@@ -130,8 +132,10 @@ func (l *Analyser) Scan() *structures.Essence {
 	}
 	callGraph := structures.ConstructCallGraph(definitions)
 	invocationTable := structures.GenerateInvocationTable(definitions)
-	scriptEssence := structures.NewExecutionContext(invocationTable, callGraph)
-	return scriptEssence
+	hashID := structures.GetHash(l.scanner.sourceCode)
+	scriptExecutable := structures.NewExecutionContext(hashID, invocationTable, callGraph)
+	println(hashID)
+	return scriptExecutable
 }
 
 func Run() {

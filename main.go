@@ -39,7 +39,7 @@ func main() {
 	length := len(handlers)
 	println("handlers length: ", length)
 	go engine.Listen(&callPipe)
-	go runServer()
+	runServer()
 
 	fmt.Println("Go listener running for engine -> server in main thread")
 
@@ -49,14 +49,15 @@ func main() {
 		mux.HandleFunc(handler.Url, handler.Func)
 	}
 
-	for {
-		select {
-		case callData := <-callPipe:
-			route := callData["route"].(string)
-			println("Received call: ", callData["route"].(string), callData["body"])
-			println("Received")
-			handler := fetchHandler(route)
-			println("Handler: ", handler.Url)
-		}
-	}
+	//for {
+	//	select {
+	//	case <-callPipe:
+	//		//route := callData["route"].(string)
+	//		//println("Received call: ", callData["route"].(string), callData["body"])
+	//		//println("Received")
+	//		//handler := fetchHandler(route)
+	//		//println("Handler: ", handler.Url)
+	//		println("I was probably not expecting this")
+	//	}
+	//}
 }

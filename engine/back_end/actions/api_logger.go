@@ -12,9 +12,15 @@ func GetLoggerActions() []structures.Method {
 		structures.Method{
 			Identifier: "quando.log",
 			Function:   loggerClient.Log,
-			Type:       "action",
-			Iterator:   false,
-			Arbiter:    false,
+			Params: []structures.Param{
+				structures.Param{
+					Identifier: "text",
+					Type:       "STRING",
+				},
+			},
+			Type:     "action",
+			Iterator: false,
+			Arbiter:  false,
 		},
 	}
 }

@@ -13,7 +13,7 @@ func GetKeyboardCallbacks() []structures.Method {
 			Identifier: "quando.key.handleKey",
 			Function:   KeyPress,
 			Type:       "callback",
-			Iterator:   false,
+			Iterator:   true,
 			Arbiter:    false,
 		},
 	}
@@ -29,7 +29,7 @@ func KeyPress(params map[string]interface{}) (float64, map[string]interface{}) {
 	case "windows":
 		// TODO FIXME
 	}
-	return 0.0, nil
+	return -1.0, nil
 }
 
 func keyPressLinux(key string, ctrl bool, alt bool) {

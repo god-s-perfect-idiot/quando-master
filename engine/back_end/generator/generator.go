@@ -14,7 +14,7 @@ func NewGenerator() *Generator {
 	}
 }
 
-func (g *Generator) GenerateCode(essence structures.Essence) {
+func (g *Generator) GenerateCode(essence structures.Executable) {
 	for _, invocation := range *essence.Invocations {
 		switch invocation.Type {
 		case "callback":

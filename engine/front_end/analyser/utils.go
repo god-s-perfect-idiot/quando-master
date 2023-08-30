@@ -15,7 +15,7 @@ func IsIntegerParameter(value string) bool {
 }
 
 func IsFloatParameter(value string) bool {
-	_, err := strconv.ParseFloat(value, 64)
+	_, err := strconv.ParseFloat(value, 32)
 	return err == nil
 }
 

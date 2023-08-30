@@ -1,6 +1,9 @@
 package structures
 
-import "math/rand"
+import (
+	"github.com/shomali11/util/xhashes"
+	"math/rand"
+)
 
 func GenerateRandomSequence(count int) []int {
 	var sequence []int
@@ -21,4 +24,8 @@ func GenerateRandomSequence(count int) []int {
 		}
 	}
 	return sequence
+}
+
+func GetHash(sourceCode string) string {
+	return xhashes.SHA256(sourceCode)
 }

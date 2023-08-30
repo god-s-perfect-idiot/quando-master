@@ -62,7 +62,7 @@ func TestGeneratorGenerateCode(t *testing.T) {
 	}
 	callGraph := structures.ConstructCallGraph(definitions)
 	invocations := structures.GenerateInvocationTable(definitions)
-	essence := structures.Essence{
+	essence := structures.Executable{
 		DependencyGraph: &callGraph,
 		Invocations:     &invocations,
 		CallStack:       structures.NewStack(),
@@ -95,9 +95,9 @@ func TestGeneratorGenerateCode(t *testing.T) {
 	}
 	g.GenerateCode(essence)
 	if essence.DependencyGraph.GetRoots()[0].Method.Identifier != "quando.testCallback" {
-		t.Error("Essence dependency graph should have quando.test as root")
+		t.Error("Executable dependency graph should have quando.test as root")
 	}
 	if essence.DependencyGraph.GetRoots()[0].MainChildren[0].Method.Identifier != "quando.testAction" {
-		t.Error("Essence dependency graph should have quando.test as root")
+		t.Error("Executable dependency graph should have quando.test as root")
 	}
 }

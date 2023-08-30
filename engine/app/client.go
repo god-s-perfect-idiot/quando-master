@@ -6,6 +6,7 @@ import (
 	"quando/engine/back_end/core"
 	"quando/engine/back_end/generator"
 	"quando/engine/front_end/analyser"
+	"quando/engine/structures"
 )
 
 var callPipe *chan map[string]interface{}
@@ -35,9 +36,27 @@ func readScript(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func crashScript(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "POST":
+		r.ParseForm()
+		script := r.Form.Get("script")
+		fmt.Println("Received POST request with body:", script)
+		if script != "" {
+			hashID := structures.GetHash(script)
+			*callPipe <- map[string]interface{}{
+				"crash": hashID,
+			}
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Script Termination Scheduled"))
+	}
+}
+
 func Listen(channel *chan map[string]interface{}) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/script", readScript)
+	mux.HandleFunc("/stop", crashScript)
 	callPipe = channel
 	fmt.Println("Quando Go Engine started")
 	fmt.Println("..serving Engine on : 127.0.0.1:1024")
