@@ -19,7 +19,14 @@ func GetMouseCallbacks() []structures.Method {
 		},
 		structures.Method{
 			Identifier: "quando.mouse.handleY",
-			Function:   mouseMoveY,
+			Function:   MouseMoveY,
+			Type:       "callback",
+			Iterator:   true,
+			Arbiter:    false,
+		},
+		structures.Method{
+			Identifier: "quando.mouse.handleClick",
+			Function:   MouseClick,
 			Type:       "callback",
 			Iterator:   true,
 			Arbiter:    false,
@@ -42,7 +49,7 @@ func MouseMoveX(params map[string]interface{}) (float64, map[string]interface{})
 	return val, nil
 }
 
-func mouseMoveY(params map[string]interface{}) (float64, map[string]interface{}) {
+func MouseMoveY(params map[string]interface{}) (float64, map[string]interface{}) {
 	pressed := params["pressed"].(bool)
 	inverted := params["inverted"].(bool)
 	var val float64
@@ -54,6 +61,17 @@ func mouseMoveY(params map[string]interface{}) (float64, map[string]interface{})
 	}
 	println("val", val)
 	return val, nil
+}
+
+func MouseClick(params map[string]interface{}) (float64, map[string]interface{}) {
+	key := params["key"].(string)
+	switch runtime.GOOS {
+	case "linux":
+		mouseClickLinux(key)
+	case "windows":
+		// TODO FIXME
+	}
+	return -1.0, nil
 }
 
 func getScreenSize() (int, int) {
@@ -88,6 +106,30 @@ func mouseMoveLinux() {
 		} else {
 			prevY = &e.Y
 			prevX = &e.X
+		}
+	})
+
+	s := hook.Start()
+	<-hook.Process(s)
+}
+
+func mouseClickLinux(key string) {
+	var keyButton uint16
+	switch key {
+	case "left":
+		keyButton = 1
+	case "right":
+		keyButton = 3
+	case "middle":
+		keyButton = 2
+	case "acc1":
+		keyButton = 4
+	case "acc2":
+		keyButton = 5
+	}
+	hook.Register(hook.MouseDown, []string{}, func(e hook.Event) {
+		if e.Button == keyButton {
+			hook.End()
 		}
 	})
 

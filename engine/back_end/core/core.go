@@ -4,17 +4,24 @@ import "quando/engine/structures"
 
 func RunNode(node *structures.CallNode, executable *structures.Executable) {
 	executable.CallStack.Push(node)
-	if node.Method.Identifier != "" {
-		switch node.Type {
-		case "action":
-			node.Method.Call(node.Definition.Signature.Parameters, executable)
-		case "callback":
-			count := 1
-			if node.Method.IsIterator() {
-				count = -1
-			}
-			//TODO Fix break
-			for i := 0; i != count; i++ {
+	select {
+	// TODO Fix break THIS ISNT WORKING
+	case callData := <-*executable.CallPipe:
+		if callData["crash"] == executable.Hash {
+			//return
+		}
+	default:
+		if node.Method.Identifier != "" {
+			switch node.Type {
+			case "action":
+				node.Method.Call(node.Definition.Signature.Parameters, executable)
+			case "callback":
+				//count := 1
+				//if node.Method.IsIterator() {
+				//	count = -1
+				//}
+				//TODO Fix break
+				//for i := 0; i != count; i++ {
 				if node.Method.IsArbiter() {
 					if !executable.ValidateData("sequence") {
 						executable.SetData("sequence", structures.GenerateRandomSequence(len(node.MainChildren)))
@@ -34,12 +41,15 @@ func RunNode(node *structures.CallNode, executable *structures.Executable) {
 						RunNode(child, executable)
 					}
 				}
+				if node.Method.IsIterator() {
+					RunNode(node, executable)
+				}
+				//}
+			case "conditional callback":
+				// TODO Implement Conditional Callbacks
+				// Logic : Perform Main Child sequentially until condition
+				// Then switch to Alt Child and perform sequentially until condition resets
 			}
-
-		case "conditional callback":
-			// TODO Implement Conditional Callbacks
-			// Logic : Perform Main Child sequentially until condition
-			// Then switch to Alt Child and perform sequentially until condition resets
 		}
 	}
 }
