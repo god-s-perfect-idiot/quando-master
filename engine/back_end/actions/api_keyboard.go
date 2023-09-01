@@ -25,16 +25,14 @@ func NewKeyboard() *KeyboardClient {
 	return &KeyboardClient{}
 }
 
-func (k *KeyboardClient) Key(params map[string]interface{}) (float64, map[string]interface{}) {
+func (k *KeyboardClient) Key(params map[string]interface{}, _ *structures.RunContext) {
 	ch := params["ch"].(string)
 	upDown := params["upDown"].(string)
 	onOff := params["onOff"].(float64)
-	callPipe := params["callPipe"].(*chan map[string]interface{})
-	k.key(ch, upDown, onOff, callPipe)
-	return 0.0, nil
+	k.key(ch, upDown, onOff)
 }
 
-func (k *KeyboardClient) key(ch string, upDown string, onOff float64, callPipe *chan map[string]interface{}) {
+func (k *KeyboardClient) key(ch string, upDown string, onOff float64) {
 	println("pressKey", ch, upDown, onOff)
 	var press bool
 	switch upDown {
@@ -47,12 +45,5 @@ func (k *KeyboardClient) key(ch string, upDown string, onOff float64, callPipe *
 			press = true
 		}
 	}
-	println("press", press)
-	//body := []byte(`{"ch": "` + ch + `", "press": ` + strconv.FormatBool(press) + `}`)
-	//route := "control/key"
-	//payload := make(map[string]interface{})
-	//payload["route"] = route
-	//payload["body"] = body
-	//*callPipe <- payload
 	keyboard.PressRelease(ch, press)
 }

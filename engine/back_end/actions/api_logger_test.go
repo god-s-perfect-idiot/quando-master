@@ -1,22 +1,13 @@
 package actions
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestNewLogger(t *testing.T) {
 	l := NewLogger()
 	if l == nil {
 		t.Error("NewLogger() should not return nil")
-	}
-}
-
-func TestLoggerClient_Log(t *testing.T) {
-	l := NewLogger()
-	params := map[string]interface{}{
-		"text": "test",
-	}
-	val, _ := l.Log(params)
-	if val != 0.0 {
-		t.Error("Log() should return 0.0")
 	}
 }
 

@@ -2,7 +2,6 @@ package devices
 
 import (
 	"quando/engine/structures"
-	"time"
 )
 
 func GetTimerCallbacks() []structures.Method {
@@ -39,29 +38,51 @@ func GetTimerCallbacks() []structures.Method {
 	}
 }
 
-func After(params map[string]interface{}) (float64, map[string]interface{}) {
+func After(params map[string]interface{}, ctx *structures.RunContext) {
 	count := params["count"].(int)
 	units := params["units"].(string)
 	duration := timeMS(count, units)
-	after(duration)
-	return -1.0, nil
+	after(duration, ctx)
 }
 
-func Every(params map[string]interface{}) (float64, map[string]interface{}) {
+func after(count int, ctx *structures.RunContext) {
+	wait(count)
+	for _, child := range ctx.CallNode.MainChildren {
+		child.Method.CallFunc(ctx.Executable, child)
+	}
+}
+
+func Every(params map[string]interface{}, ctx *structures.RunContext) {
 	count := params["count"].(int)
 	units := params["units"].(string)
 	duration := timeMS(count, units)
-	after(duration)
-	return -1.0, nil
+	every(duration, ctx)
 }
 
-func Per(params map[string]interface{}) (float64, map[string]interface{}) {
+func every(count int, ctx *structures.RunContext) {
+	for {
+		wait(count)
+		for _, child := range ctx.CallNode.MainChildren {
+			child.Method.CallFunc(ctx.Executable, child)
+		}
+	}
+}
+
+func Per(params map[string]interface{}, ctx *structures.RunContext) {
 	count := params["count"].(int)
 	units := params["units"].(string)
 	duration := timeMS(1, units)
 	duration = duration / count
-	after(duration)
-	return -1.0, nil
+	per(duration, ctx)
+}
+
+func per(duration int, ctx *structures.RunContext) {
+	for {
+		wait(duration)
+		for _, child := range ctx.CallNode.MainChildren {
+			child.Method.CallFunc(ctx.Executable, child)
+		}
+	}
 }
 
 //func ValStep(params map[string]interface{}) (float64, map[string]interface{}) {
@@ -72,51 +93,86 @@ func Per(params map[string]interface{}) (float64, map[string]interface{}) {
 //	return val, nil
 //}
 
-func VaryOver(params map[string]interface{}) (float64, map[string]interface{}) {
+func VaryOver(params map[string]interface{}, ctx *structures.RunContext) {
 	count := params["count"].(int)
 	units := params["units"].(string)
 	mode := params["mode"].(string)
 	times := params["times"].(int)
 	timesUnits := params["timesUnits"].(string)
 	inverted := params["inverted"].(bool)
-	val := params["val"].(float64)
 	duration := timeMS(1, timesUnits)
 	duration = duration / times
 	durationTotal := timeMS(count, units)
-	if params["invert"] == nil {
-		params["invert"] = false
+	varyOver(duration, durationTotal, times, units, mode, inverted, ctx)
+
+	//invert := params["invert"].(bool)
+	//if invert {
+	//	inverted = !inverted
+	//}
+	//totalTimes := times * durationTotal / 1000
+	//newVal := valStep(inverted, val, totalTimes, mode)
+	//switch mode {
+	//case "once":
+	//	if newVal > 1.0 {
+	//		newVal = 1.0
+	//	}
+	//	if newVal < 0.0 {
+	//		newVal = 0.0
+	//	}
+	//case "repeat":
+	//	if newVal > 1.0 {
+	//		newVal = 0.0
+	//	}
+	//	if newVal < 0.0 {
+	//		newVal = 1.0
+	//	}
+	//case "seesaw":
+	//	if newVal >= float64(1.0) || newVal <= float64(0.0) {
+	//		invert = !invert
+	//	}
+	//}
+	//data := make(map[string]interface{})
+	//data["invert"] = invert
+	//return newVal, data
+}
+
+func varyOver(duration int, durationTotal int, times int, units string, mode string, inverted bool, ctx *structures.RunContext) {
+	totalTimes := times * durationTotal / 1000
+	var val float64
+	if inverted {
+		val = 1.0
+	} else {
 		val = 0.0
 	}
-	invert := params["invert"].(bool)
-	if invert {
-		inverted = !inverted
+	for {
+		wait(duration)
+		newVal := valStep(inverted, val, totalTimes, mode)
+		switch mode {
+		case "once":
+			if newVal > 1.0 {
+				newVal = 1.0
+			}
+			if newVal < 0.0 {
+				newVal = 0.0
+			}
+		case "repeat":
+			if newVal > 1.0 {
+				newVal = 0.0
+			}
+			if newVal < 0.0 {
+				newVal = 1.0
+			}
+		case "seesaw":
+			if newVal >= float64(1.0) || newVal <= float64(0.0) {
+				inverted = !inverted
+			}
+		}
+		ctx.Executable.Val = newVal
+		for _, child := range ctx.CallNode.MainChildren {
+			child.Method.CallFunc(ctx.Executable, child)
+		}
+		val = newVal
 	}
-	totalTimes := times * durationTotal / 1000
-	newVal := valStep(inverted, val, totalTimes, mode)
-	switch mode {
-	case "once":
-		if newVal > 1.0 {
-			newVal = 1.0
-		}
-		if newVal < 0.0 {
-			newVal = 0.0
-		}
-	case "repeat":
-		if newVal > 1.0 {
-			newVal = 0.0
-		}
-		if newVal < 0.0 {
-			newVal = 1.0
-		}
-	case "seesaw":
-		if newVal >= float64(1.0) || newVal <= float64(0.0) {
-			invert = !invert
-		}
-	}
-	data := make(map[string]interface{})
-	data["invert"] = invert
-	after(duration)
-	return newVal, data
 }
 
 func valStep(inverted bool, val float64, times int, mode string) float64 {
@@ -144,10 +200,6 @@ func valStep(inverted bool, val float64, times int, mode string) float64 {
 	}
 
 	return val
-}
-
-func after(count int) {
-	time.Sleep(time.Duration(count) * time.Millisecond)
 }
 
 func timeMS(value int, unit string) int {

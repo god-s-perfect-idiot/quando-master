@@ -50,3 +50,7 @@ func (e *Executable) ValidateData(key string) bool {
 	_, ok := e.Data[key]
 	return ok
 }
+
+func (e *Executable) CheckVal() bool {
+	return e.Val == 1.0
+}

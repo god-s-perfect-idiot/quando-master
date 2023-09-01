@@ -29,10 +29,9 @@ func NewLogger() *LoggerClient {
 	return &LoggerClient{}
 }
 
-func (l *LoggerClient) Log(params map[string]interface{}) (float64, map[string]interface{}) {
+func (l *LoggerClient) Log(params map[string]interface{}, _ *structures.RunContext) {
 	message := params["text"].(string)
 	l.log(message)
-	return 0.0, nil
 }
 
 func (l *LoggerClient) log(message string) {

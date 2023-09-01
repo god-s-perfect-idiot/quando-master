@@ -34,44 +34,36 @@ func GetMouseCallbacks() []structures.Method {
 	}
 }
 
-// TODO Very buggy. There's a race condition somewhere. Probably in the hook library.
-func MouseMoveX(params map[string]interface{}) (float64, map[string]interface{}) {
+func MouseMoveX(params map[string]interface{}, runContext *structures.RunContext) {
 	pressed := params["pressed"].(bool)
 	inverted := params["inverted"].(bool)
-	var val float64
 	switch runtime.GOOS {
 	case "linux":
-		val = mouseMoveXLinux(pressed, inverted)
+		mouseMoveXLinux(pressed, inverted, runContext)
 	case "windows":
 		// TODO FIXME
 	}
-	println("val", val)
-	return val, nil
 }
 
-func MouseMoveY(params map[string]interface{}) (float64, map[string]interface{}) {
+func MouseMoveY(params map[string]interface{}, runContext *structures.RunContext) {
 	pressed := params["pressed"].(bool)
 	inverted := params["inverted"].(bool)
-	var val float64
 	switch runtime.GOOS {
 	case "linux":
-		val = mouseMoveYLinux(pressed, inverted)
+		mouseMoveYLinux(pressed, inverted, runContext)
 	case "windows":
 		// TODO FIXME
 	}
-	println("val", val)
-	return val, nil
 }
 
-func MouseClick(params map[string]interface{}) (float64, map[string]interface{}) {
+func MouseClick(params map[string]interface{}, runContext *structures.RunContext) {
 	key := params["key"].(string)
 	switch runtime.GOOS {
 	case "linux":
-		mouseClickLinux(key)
+		mouseClickLinux(key, runContext)
 	case "windows":
 		// TODO FIXME
 	}
-	return -1.0, nil
 }
 
 func getScreenSize() (int, int) {
@@ -113,7 +105,7 @@ func mouseMoveLinux() {
 	<-hook.Process(s)
 }
 
-func mouseClickLinux(key string) {
+func mouseClickLinux(key string, runContext *structures.RunContext) {
 	var keyButton uint16
 	switch key {
 	case "left":
@@ -129,7 +121,10 @@ func mouseClickLinux(key string) {
 	}
 	hook.Register(hook.MouseDown, []string{}, func(e hook.Event) {
 		if e.Button == keyButton {
-			hook.End()
+			for _, child := range runContext.CallNode.MainChildren {
+				child.Method.CallFunc(runContext.Executable, child)
+			}
+			//hook.End()
 		}
 	})
 
@@ -137,7 +132,7 @@ func mouseClickLinux(key string) {
 	<-hook.Process(s)
 }
 
-func mouseMoveYLinux(pressed bool, inverted bool) float64 {
+func mouseMoveYLinux(pressed bool, inverted bool, runContext *structures.RunContext) {
 	yMax, _ := getScreenSize()
 	var prevY *int16
 	var diff float64
@@ -154,7 +149,11 @@ func mouseMoveYLinux(pressed bool, inverted bool) float64 {
 				//confidence
 				if yDiff > 5 || yDiff < -5 {
 					diff = float64(newY+1) / float64(yMax)
-					defer hook.End()
+					runContext.Executable.Val = diff
+					for _, child := range runContext.CallNode.MainChildren {
+						child.Method.CallFunc(runContext.Executable, child)
+					}
+					//defer hook.End()
 				}
 			} else {
 				prevY = &e.Y
@@ -164,10 +163,9 @@ func mouseMoveYLinux(pressed bool, inverted bool) float64 {
 
 	s := hook.Start()
 	<-hook.Process(s)
-	return diff
 }
 
-func mouseMoveXLinux(pressed bool, inverted bool) float64 {
+func mouseMoveXLinux(pressed bool, inverted bool, runContext *structures.RunContext) {
 	_, xMax := getScreenSize()
 	var prevX *int16
 	var diff float64
@@ -184,7 +182,11 @@ func mouseMoveXLinux(pressed bool, inverted bool) float64 {
 				//confidence
 				if xDiff > 5 || xDiff < -5 {
 					diff = float64(newX+1) / float64(xMax)
-					hook.End()
+					runContext.Executable.Val = diff
+					for _, child := range runContext.CallNode.MainChildren {
+						child.Method.CallFunc(runContext.Executable, child)
+					}
+					//hook.End()
 				}
 			} else {
 				prevX = &e.X
@@ -194,5 +196,4 @@ func mouseMoveXLinux(pressed bool, inverted bool) float64 {
 
 	s := hook.Start()
 	<-hook.Process(s)
-	return diff
 }

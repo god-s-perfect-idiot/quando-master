@@ -20,6 +20,11 @@ type Param struct {
 	Type       string
 }
 
+type RunContext struct {
+	Executable *Executable
+	CallNode   *CallNode
+}
+
 func (m *Method) FindParam(id string) *Param {
 	for _, param := range m.Params {
 		if param.Identifier == id {
@@ -50,6 +55,41 @@ func (m *Method) cleanParam(param Parameter, essence *Executable) Parameter {
 		}
 	}
 	return param
+}
+
+func (m *Method) CallFunc(executable *Executable, node *CallNode) {
+	parameters := node.Definition.Signature.Parameters
+	params := make(map[string]interface{})
+	params["callPipe"] = executable.CallPipe
+	params["val"] = executable.Val
+	for _, parameter := range parameters {
+		parameter = m.cleanParam(parameter, executable)
+		params[parameter.Identifier] = parameter.Value
+	}
+	//if m.IsArbiter() {
+	//	params["keys"] = executable.Data["keys"].([]int)
+	//	params["nodeCount"] = executable.Data["nodeCount"].(int)
+	//	params["sequence"] = executable.Data["sequence"].([]int)
+	//}
+	if m.DataKeys != nil {
+		for _, key := range m.DataKeys {
+			if executable.Data[key] != nil {
+				params[key] = executable.Data[key]
+			}
+		}
+	}
+	m.Function.(func(map[string]interface{}, *RunContext))(params, &RunContext{
+		Executable: executable,
+		CallNode:   node,
+	})
+	//if m.Type == "callback" && val != -1.0 {
+	//	executable.Val = val
+	//}
+	//if data != nil {
+	//	for k, v := range data {
+	//		executable.SetData(k, v)
+	//	}
+	//}
 }
 
 func (m *Method) Call(parameters []Parameter, executable *Executable) {

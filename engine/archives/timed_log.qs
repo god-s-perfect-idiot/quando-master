@@ -1,3 +1,3 @@
-quando.time.after time=1, unit="seconds", callback={
+quando.time.after count=1, units="seconds", callback={
     quando.log text="Hello World!"
 }

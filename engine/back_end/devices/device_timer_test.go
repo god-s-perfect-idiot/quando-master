@@ -10,7 +10,7 @@ func TestGetTimerCallbacks(t *testing.T) {
 	if len(methods) == 0 {
 		t.Error("GetTimerCallbacks() should not return empty")
 	}
-	if len(methods) != 3 {
+	if len(methods) != 4 {
 		t.Error("GetTimerCallbacks() should return 3 methods")
 	}
 	if methods[0].Identifier != "quando.time.after" {
@@ -21,5 +21,8 @@ func TestGetTimerCallbacks(t *testing.T) {
 	}
 	if methods[2].Identifier != "quando.time.per" {
 		t.Error("GetTimerCallbacks()[2] should have identifier quando.time.per")
+	}
+	if methods[3].Identifier != "quando.time.vary" {
+		t.Error("GetTimerCallbacks()[3] should have identifier quando.time.vary")
 	}
 }

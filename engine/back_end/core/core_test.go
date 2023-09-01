@@ -33,15 +33,15 @@ var essence = structures.Executable{
 }
 var mockedAPIDummy1 = structures.Method{
 	Identifier: "dummy",
-	Function: func(params map[string]interface{}) (float64, map[string]interface{}) {
-		return 0.1111, nil
+	Function: func(params map[string]interface{}, ctx *structures.RunContext) {
+		ctx.Executable.Val = 0.1111
 	},
 	Type: "callback",
 }
 var mockedAPIDummy2 = structures.Method{
 	Identifier: "dummy",
-	Function: func(params map[string]interface{}) (float64, map[string]interface{}) {
-		return 0.2222, nil
+	Function: func(params map[string]interface{}, ctx *structures.RunContext) {
+		ctx.Executable.Val = 0.2222
 	},
 	Type: "callback",
 }

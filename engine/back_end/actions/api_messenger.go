@@ -25,10 +25,9 @@ func NewMessenger() *MessengerClient {
 	return &MessengerClient{}
 }
 
-func (m *MessengerClient) Send(params map[string]interface{}) (float64, map[string]interface{}) {
+func (m *MessengerClient) Send(params map[string]interface{}, _ *structures.RunContext) {
 	message := params["message"].(string)
 	m.send(message)
-	return 0.0, nil
 }
 
 func (m *MessengerClient) send(message string) {

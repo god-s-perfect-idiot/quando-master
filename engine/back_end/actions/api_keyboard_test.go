@@ -11,27 +11,6 @@ func TestNewKeyboard(t *testing.T) {
 	}
 }
 
-func TestKeyboardClient_Key(t *testing.T) {
-	k := NewKeyboard()
-	callPipe := make(chan map[string]interface{})
-	params := map[string]interface{}{
-		"ch":       "a",
-		"upDown":   "up",
-		"onOff":    1.0,
-		"callPipe": &callPipe,
-	}
-	go k.Key(params)
-	for {
-		select {
-		case payload := <-callPipe:
-			if payload["route"] != "control/key" {
-				t.Error("route should be control/key")
-			}
-			return
-		}
-	}
-}
-
 // TODO: Mock key function and test that it is called
 
 func TestKeyboardGetKeyboardActions(t *testing.T) {

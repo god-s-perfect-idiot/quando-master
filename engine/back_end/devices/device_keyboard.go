@@ -1,7 +1,6 @@
 package devices
 
 import (
-	"fmt"
 	hook "github.com/robotn/gohook"
 	"quando/engine/structures"
 	"runtime"
@@ -19,20 +18,19 @@ func GetKeyboardCallbacks() []structures.Method {
 	}
 }
 
-func KeyPress(params map[string]interface{}) (float64, map[string]interface{}) {
+func KeyPress(params map[string]interface{}, runContext *structures.RunContext) {
 	key := params["key"].(string)
 	ctrl := params["ctrl"].(bool)
 	alt := params["alt"].(bool)
 	switch runtime.GOOS {
 	case "linux":
-		keyPressLinux(key, ctrl, alt)
+		keyPressLinux(key, ctrl, alt, runContext)
 	case "windows":
 		// TODO FIXME
 	}
-	return -1.0, nil
 }
 
-func keyPressLinux(key string, ctrl bool, alt bool) {
+func keyPressLinux(key string, ctrl bool, alt bool, runContext *structures.RunContext) {
 	keys := []string{
 		key,
 	}
@@ -43,8 +41,11 @@ func keyPressLinux(key string, ctrl bool, alt bool) {
 		keys = append(keys, "alt")
 	}
 	hook.Register(hook.KeyDown, keys, func(e hook.Event) {
-		fmt.Println("received trigger")
-		hook.End()
+		//fmt.Println("received trigger")
+		//hook.End()
+		for _, child := range runContext.CallNode.MainChildren {
+			child.Method.CallFunc(runContext.Executable, child)
+		}
 	})
 
 	s := hook.Start()
