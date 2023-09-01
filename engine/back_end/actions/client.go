@@ -20,5 +20,6 @@ func NewClient() *Client {
 	client := &Client{}
 	client.AddActions(GetKeyboardActions())
 	client.AddActions(GetLoggerActions())
+	client.AddActions(GetMessengerActions())
 	return client
 }

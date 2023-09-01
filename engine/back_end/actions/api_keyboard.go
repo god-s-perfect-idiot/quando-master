@@ -2,7 +2,7 @@ package actions
 
 import (
 	"quando/engine/structures"
-	"strconv"
+	"quando/internal/server/devices/keyboard"
 )
 
 type KeyboardClient struct {
@@ -48,10 +48,11 @@ func (k *KeyboardClient) key(ch string, upDown string, onOff float64, callPipe *
 		}
 	}
 	println("press", press)
-	body := []byte(`{"ch": "` + ch + `", "press": ` + strconv.FormatBool(press) + `}`)
-	route := "control/key"
-	payload := make(map[string]interface{})
-	payload["route"] = route
-	payload["body"] = body
-	*callPipe <- payload
+	//body := []byte(`{"ch": "` + ch + `", "press": ` + strconv.FormatBool(press) + `}`)
+	//route := "control/key"
+	//payload := make(map[string]interface{})
+	//payload["route"] = route
+	//payload["body"] = body
+	//*callPipe <- payload
+	keyboard.PressRelease(ch, press)
 }
