@@ -30,3 +30,14 @@ func TestControlKeyAction(t *testing.T) {
 		t.Error("Type should be action")
 	}
 }
+
+func TestControlTypeAction(t *testing.T) {
+	keyboardActions := GetKeyboardActions()
+	controlType := keyboardActions[1]
+	if controlType.Identifier != "quando.control.type" {
+		t.Error("Identifier should be quando.control.type")
+	}
+	if controlType.Type != "action" {
+		t.Error("Type should be action")
+	}
+}

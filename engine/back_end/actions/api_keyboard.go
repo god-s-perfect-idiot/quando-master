@@ -18,6 +18,13 @@ func GetKeyboardActions() []structures.Method {
 			Iterator:   false,
 			Arbiter:    false,
 		},
+		structures.Method{
+			Identifier: "quando.control.type",
+			Function:   keyboardClient.Type,
+			Type:       "action",
+			Iterator:   false,
+			Arbiter:    false,
+		},
 	}
 }
 
@@ -46,4 +53,13 @@ func (k *KeyboardClient) key(ch string, upDown string, onOff float64) {
 		}
 	}
 	keyboard.PressRelease(ch, press)
+}
+
+func (k *KeyboardClient) Type(params map[string]interface{}, _ *structures.RunContext) {
+	text := params["text"].(string)
+	k.typeText(text)
+}
+
+func (k *KeyboardClient) typeText(text string) {
+	keyboard.TypeString(text)
 }

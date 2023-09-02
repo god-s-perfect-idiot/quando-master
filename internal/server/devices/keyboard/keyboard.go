@@ -36,7 +36,10 @@ func press_release(key keyJSON) {
 		state = "down"
 	}
 	robotgo.KeyToggle(key.Key, state)
-	println("press_release", key.Key, state)
+}
+
+func TypeString(str string) {
+	type_string(typeJSON(str))
 }
 
 func type_string(str typeJSON) {
