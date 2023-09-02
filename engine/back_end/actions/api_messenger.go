@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"fmt"
 	"quando/engine/structures"
 	"quando/internal/server/socket"
 )
@@ -31,6 +32,6 @@ func (m *MessengerClient) Send(params map[string]interface{}, _ *structures.RunC
 }
 
 func (m *MessengerClient) send(message string) {
-	socket.Broadcast(message)
-	println("send", message)
+	msgPayload := fmt.Sprintf("{\"type\":\"message\",\"message\":\"%s\"}", message)
+	socket.Broadcast(msgPayload)
 }
