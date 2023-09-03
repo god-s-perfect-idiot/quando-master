@@ -11,14 +11,15 @@
                             list.innerHTML = '';
                             var result = '';
                             for(var i=0; i<response.files.length; i++) {
-                                result += '<button onclick="setJs(\'' + response.files[i] + '\');">' + response.files[i] + '</button><br/>';
+                                btnClr = response.files[i].startsWith("q_") ? "btn-qs" : "btn-js";
+                                result += `<button class="btn ${btnClr}"  onclick="setFile('${response.files[i]}');"> ${response.files[i]} </button><br/>`;
                             }
                             list.innerHTML = result;
                         }
                     }
                 );
             }
-            function setJs(name) {
+            function setFile(name) {
                 localStorage.setItem('client_js', name);
                 document.location="/client"; // TODO Check
             }
@@ -29,8 +30,14 @@
 </head>
 
 <body onload="onload();">
-    <div>Choose script to execute by default:</div>
-    <div id='list_js'>Loading...</div>
+    <div class="dashboard-title">
+        <span>Quando Visual Editor</span>
+    </div>
+    <div class="run-info">
+        <span class="info">Choose script to execute by default:</span>
+        <span class="warning">The ones highlighted in green runs with the experimental quando engine </span>
+    </div>
+    <div class="script-list" id='list_js'>Loading...</div>
 </body>
 
 </html>

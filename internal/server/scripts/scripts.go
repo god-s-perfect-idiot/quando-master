@@ -20,8 +20,9 @@ type fileListJSON struct {
 
 type fileJSON struct {
 	// For Scripts stored as files
-	Javascript string
-	Script     string
+	Javascript   string
+	Script       string
+	QuandoScript string
 }
 
 type replyJSON struct {
@@ -76,8 +77,29 @@ func HandleFile(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 		if extension == ".js" {
+			prefix := fileloc[10:12]
 			// return the generated javascript executable file
-			str := "let exec = () => {\n" + body.Javascript + "\n}"
+			var str string
+			if prefix == "q_" {
+				str = `let exec = () => {
+					fetch("http://localhost:1024/script", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/x-www-form-urlencoded"	
+						},
+						body: new URLSearchParams({
+							script: ` + fmt.Sprintf("`%s`", body.QuandoScript) + `
+						})
+					}).then((response) => {
+						alert("Engine execution scheduled")
+					}).catch((error) => {
+						alert("Error scheduling engine execution")
+					})
+				}`
+			} else {
+				str = "let exec = () => {\n" + body.Javascript + "\n}"
+			}
+			println("Returning script: " + str)
 			fmt.Fprint(w, str)
 			return
 		}

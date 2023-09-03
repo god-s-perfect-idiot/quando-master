@@ -39,6 +39,7 @@ require (
 	github.com/quasilyte/gmath v0.0.0-20221217210116-fba37a2e15c7 // indirect
 	github.com/robotn/xgb v0.0.0-20190912153532-2cb92d044934 // indirect
 	github.com/robotn/xgbutil v0.0.0-20190912154524-c861d6f87770 // indirect
+	github.com/rs/cors v1.9.0 // indirect
 	github.com/shirou/gopsutil v3.21.10+incompatible // indirect
 	github.com/simulatedsimian/joystick v1.0.1 // indirect
 	github.com/tklauser/go-sysconf v0.3.9 // indirect

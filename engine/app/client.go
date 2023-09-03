@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"github.com/rs/cors"
 	"net/http"
 	"quando/engine/back_end/core"
 	"quando/engine/back_end/generator"
@@ -60,7 +61,8 @@ func Listen(channel *chan map[string]interface{}) {
 	callPipe = channel
 	fmt.Println("Quando Go Engine started")
 	fmt.Println("..serving Engine on : 127.0.0.1:1024")
-	err := http.ListenAndServe(":1024", mux)
+	handler := cors.Default().Handler(mux)
+	err := http.ListenAndServe(":1024", handler)
 	if err != nil {
 		panic(err)
 	}
