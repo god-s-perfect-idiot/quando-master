@@ -11,14 +11,22 @@ import (
 )
 
 var callPipe *chan map[string]interface{}
+var memory *structures.Memory
 
 func runScript(script string, callPipe *chan map[string]interface{}) {
-	codeAnalyser := analyser.NewAnalyser(script)
-	essence := codeAnalyser.Scan()
-	essence.ConnectCallPipe(callPipe)
-	codeGenerator := generator.NewGenerator()
-	codeGenerator.GenerateCode(*essence)
-	core.Execute(essence)
+	hash := structures.GetHash(script)
+	var executable *structures.Executable
+	if memory.Check(hash) {
+		executable = memory.Get(hash).(*structures.Executable)
+	} else {
+		codeAnalyser := analyser.NewAnalyser(script)
+		executable = codeAnalyser.Scan()
+		executable.ConnectCallPipe(callPipe)
+		codeGenerator := generator.NewGenerator()
+		codeGenerator.GenerateCode(*executable)
+		memory.Set(hash, executable)
+	}
+	core.Execute(executable)
 }
 
 func readScript(w http.ResponseWriter, r *http.Request) {
@@ -56,6 +64,7 @@ func crashScript(w http.ResponseWriter, r *http.Request) {
 
 func Listen(channel *chan map[string]interface{}) {
 	mux := http.NewServeMux()
+	memory = structures.NewMemory()
 	mux.HandleFunc("/script", readScript)
 	mux.HandleFunc("/stop", crashScript)
 	callPipe = channel

@@ -134,7 +134,6 @@ func (l *Analyser) Scan() *structures.Executable {
 	invocationTable := structures.GenerateInvocationTable(definitions)
 	hashID := structures.GetHash(l.scanner.sourceCode)
 	scriptExecutable := structures.NewExecutionContext(hashID, invocationTable, callGraph)
-	println(hashID)
 	return scriptExecutable
 }
 
