@@ -81,4 +81,5 @@ func Execute(essence *structures.Executable) {
 	for _, root := range roots {
 		RunNode(root, essence)
 	}
+	<-*essence.CallPipe
 }
