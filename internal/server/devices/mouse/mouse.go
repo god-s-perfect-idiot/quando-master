@@ -10,6 +10,14 @@ import (
 	"github.com/go-vgo/robotgo"
 )
 
+type MouseJSON struct {
+	X      *float32 `json:"x,omitempty"`
+	Y      *float32 `json:"y,omitempty"`
+	Left   string   `json:"left"`
+	Middle string   `json:"middle"`
+	Right  string   `json:"right"`
+}
+
 type mouseJSON struct {
 	X      *float32 `json:"x,omitempty"`
 	Y      *float32 `json:"y,omitempty"`
@@ -42,6 +50,17 @@ func check_mouse(button_action string, last_action *string, button_name string) 
 			}
 		}
 	}
+}
+
+func MovePress(mouse MouseJSON) {
+	mouseVal := mouseJSON{
+		X:      mouse.X,
+		Y:      mouse.Y,
+		Left:   mouse.Left,
+		Middle: mouse.Middle,
+		Right:  mouse.Right,
+	}
+	move_press(mouseVal)
 }
 
 func move_press(mouse mouseJSON) {

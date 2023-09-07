@@ -6,8 +6,8 @@
         <meta charset="UTF-8">
         <script type="text/javascript">
             function redirect() {
-                var url = '/client/setup.html';
-                var item = localStorage.getItem('client_js');
+                let url = '/client/setup.html';
+                let item = localStorage.getItem('client_js');
                 if (item != null) {
                     url = '/scripts/' + item + ".html"
                 }

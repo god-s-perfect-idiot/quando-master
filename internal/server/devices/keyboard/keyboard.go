@@ -22,12 +22,24 @@ type keyJSON struct {
 
 type typeJSON string
 
+func PressRelease(key string, press bool) {
+	keyJson := keyJSON{
+		Key:   key,
+		Press: press,
+	}
+	press_release(keyJson)
+}
+
 func press_release(key keyJSON) {
 	state := "up"
 	if key.Press {
 		state = "down"
 	}
 	robotgo.KeyToggle(key.Key, state)
+}
+
+func TypeString(str string) {
+	type_string(typeJSON(str))
 }
 
 func type_string(str typeJSON) {

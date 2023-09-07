@@ -7,11 +7,10 @@ import (
 	"quando/internal/server/devices/usb/maker_pi_rp2040"
 	"quando/internal/server/devices/usb/rpi_pico_w"
 	"quando/internal/server/devices/usb/ubit"
-	"quando/internal/tray"
 )
 
 func init() {
-	go tray.Run()
+	//go tray.Run()
 	handlers = append(handlers,
 		server.Handler{Url: "/control/ubit/display", Func: ubit.HandleDisplay},
 		server.Handler{Url: "/control/ubit/icon", Func: ubit.HandleIcon},
