@@ -42,6 +42,7 @@ func GetPickerCallbacks() []structures.Method {
 func PickEvery(params map[string]interface{}, ctx *structures.RunContext) {
 	count := params["count"].(int)
 	units := params["units"].(string)
+	killChannel = params["callPipe"].(*chan map[string]interface{})
 	duration := timeMS(count, units)
 	go pickEvery(duration, len(ctx.CallNode.MainChildren), ctx)
 }
@@ -49,11 +50,19 @@ func PickEvery(params map[string]interface{}, ctx *structures.RunContext) {
 func pickEvery(duration int, nodeCount int, ctx *structures.RunContext) {
 	previous := 0
 	for {
-		wait(duration)
-		selection := pickNext(nodeCount, previous)
-		previous = selection
-		lucky := ctx.CallNode.MainChildren[selection]
-		lucky.Method.CallFunc(ctx.Executable, lucky)
+		select {
+		case crashCall := <-*killChannel:
+			hash := crashCall["hash"].(string)
+			if hash == ctx.Executable.Hash {
+				return
+			}
+		default:
+			wait(duration)
+			selection := pickNext(nodeCount, previous)
+			previous = selection
+			lucky := ctx.CallNode.MainChildren[selection]
+			lucky.Method.CallFunc(ctx.Executable, lucky)
+		}
 	}
 }
 

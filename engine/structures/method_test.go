@@ -78,80 +78,105 @@ func TestIsArbiter(t *testing.T) {
 	}
 }
 
-func TestCall(t *testing.T) {
-	essence := Executable{}
-	param := Parameter{
-		Identifier: "test",
-		Type:       "NUMBER",
-		Value:      "1",
-	}
-	m := Method{
-		Identifier: "test",
-		Function: func(params map[string]interface{}) (float64, map[string]interface{}) {
-			return 1.1, nil
+func TestCallFunc(t *testing.T) {
+	essence := Executable{
+		DependencyGraph: &CallGraph{
+			Roots: []*CallNode{
+				{
+					Method: Method{
+						Identifier: "test",
+						Function: func(params map[string]interface{}, ctx *RunContext) {
+							ctx.Executable.Val = 1.1
+						},
+					},
+				},
+			},
 		},
-		Type: "callback",
 	}
-	m.Call([]Parameter{param}, &essence)
+	m := essence.DependencyGraph.Roots[0].Method
+	m.CallFunc(&essence, essence.DependencyGraph.Roots[0])
 	if essence.Val != 1.1 {
-		t.Error("Method Call should return essence with val 2")
+		t.Error("Method CallFunc should return essence with val 2")
 	}
 }
 
-func TestCallWithVal(t *testing.T) {
+func TestCallFuncWithVal(t *testing.T) {
 	essence := Executable{
 		Val: 0.5,
-	}
-	param := Parameter{
-		Identifier: "test",
-		Type:       "VAL",
-		Value:      "val",
-	}
-	m := Method{
-		Identifier: "test",
-		Function: func(params map[string]interface{}) (float64, map[string]interface{}) {
-			if params["test"] == 0.5 {
-				return 0.1, nil
-			} else {
-				return 0.0, nil
-			}
+		DependencyGraph: &CallGraph{
+			Roots: []*CallNode{
+				{
+					Method: Method{
+						Identifier: "test",
+						Function: func(params map[string]interface{}, ctx *RunContext) {
+							if params["test"] == 0.5 {
+								ctx.Executable.Val = 0.1
+							} else {
+								ctx.Executable.Val = 0.0
+							}
+						},
+					},
+					Definition: Definition{
+						Signature: CallSignature{
+							Parameters: []Parameter{
+								{
+									Identifier: "test",
+									Type:       "VAL",
+									Value:      "val",
+								},
+							},
+						},
+					},
+				},
+			},
 		},
-		Type: "callback",
 	}
-	m.Call([]Parameter{param}, &essence)
+	m := essence.DependencyGraph.Roots[0].Method
+	m.CallFunc(&essence, essence.DependencyGraph.Roots[0])
 	if essence.Val != 0.1 {
-		t.Error("Method Call should return essence with val 0.5")
+		t.Error("Method CallFunc should return essence with val 0.5")
 	}
 }
 
-func TestCallWithValAndData(t *testing.T) {
+func TestCallFuncWithValAndData(t *testing.T) {
 	essence := Executable{
 		Val:  0.5,
 		Data: make(map[string]interface{}),
-	}
-	param := Parameter{
-		Identifier: "test",
-		Type:       "VAL",
-		Value:      "val",
-	}
-	m := Method{
-		Identifier: "test",
-		Function: func(params map[string]interface{}) (float64, map[string]interface{}) {
-			if params["test"] == 0.5 {
-				return 0.1, map[string]interface{}{
-					"test": 0.2,
-				}
-			} else {
-				return 0.0, nil
-			}
+		DependencyGraph: &CallGraph{
+			Roots: []*CallNode{
+				{
+					Method: Method{
+						Identifier: "test",
+						Function: func(params map[string]interface{}, ctx *RunContext) {
+							if params["test"] == 0.5 {
+								ctx.Executable.Val = 0.1
+								ctx.Executable.Data["test"] = 0.2
+							} else {
+								ctx.Executable.Val = 0.0
+							}
+						},
+					},
+					Definition: Definition{
+						Signature: CallSignature{
+							Parameters: []Parameter{
+								{
+									Identifier: "test",
+									Type:       "VAL",
+									Value:      "val",
+								},
+							},
+						},
+					},
+				},
+			},
 		},
-		Type: "callback",
 	}
-	m.Call([]Parameter{param}, &essence)
+	m := essence.DependencyGraph.Roots[0].Method
+	m.CallFunc(&essence, essence.DependencyGraph.Roots[0])
 	if essence.Val != 0.1 {
-		t.Error("Method Call should return essence with val 0.5")
+		t.Error("Method CallFunc should return essence with val 0.5")
 	}
 	if essence.Data["test"] != 0.2 {
-		t.Error("Method Call should return essence with data test 0.2")
+		t.Error("Method CallFunc should return essence with data test 0.2")
 	}
 }

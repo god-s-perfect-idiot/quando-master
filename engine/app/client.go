@@ -66,7 +66,7 @@ func crashScript(w http.ResponseWriter, r *http.Request) {
 		if script != "" {
 			hashID := structures.GetHash(script)
 			*callPipe <- map[string]interface{}{
-				"crash": hashID,
+				"hash": hashID,
 			}
 		}
 		w.WriteHeader(http.StatusOK)

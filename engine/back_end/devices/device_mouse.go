@@ -33,6 +33,8 @@ func GetMouseCallbacks() []structures.Method {
 	}
 }
 
+//add terminations for hooks
+
 func MouseMoveX(params map[string]interface{}, runContext *structures.RunContext) {
 	pressed := params["pressed"].(bool)
 	inverted := params["inverted"].(bool)

@@ -2,6 +2,8 @@ package devices
 
 import "quando/engine/structures"
 
+var killChannel *chan map[string]interface{}
+
 type Client struct {
 	Methods []structures.Method
 }
