@@ -10,21 +10,21 @@ type MouseClient struct{}
 func GetMouseActions() []structures.Method {
 	mouseClient := NewMouse()
 	return []structures.Method{
-		structures.Method{
+		{
 			Identifier: "quando.control.mouseX",
 			Function:   mouseClient.MouseX,
 			Type:       "action",
 			Iterator:   false,
 			Arbiter:    false,
 		},
-		structures.Method{
+		{
 			Identifier: "quando.control.mouseY",
 			Function:   mouseClient.MouseY,
 			Type:       "action",
 			Iterator:   false,
 			Arbiter:    false,
 		},
-		structures.Method{
+		{
 			Identifier: "quando.control.mouse",
 			Function:   mouseClient.MouseXY,
 			Type:       "action",

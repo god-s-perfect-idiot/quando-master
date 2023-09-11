@@ -8,28 +8,28 @@ import (
 
 func GetPickerCallbacks() []structures.Method {
 	return []structures.Method{
-		structures.Method{
+		{
 			Identifier: "quando.pick.random",
 			Function:   PickRandom,
 			Type:       "callback",
 			Iterator:   false,
 			Arbiter:    true,
 		},
-		structures.Method{
+		{
 			Identifier: "quando.pick.every",
 			Function:   PickEvery,
 			Type:       "callback",
 			Iterator:   true,
 			Arbiter:    true,
 		},
-		structures.Method{
+		{
 			Identifier: "quando.pick.one",
 			Function:   PickOne,
 			Type:       "callback",
 			Iterator:   false,
 			Arbiter:    true,
 		},
-		structures.Method{
+		{
 			Identifier: "quando.pick.val",
 			Function:   PickVal,
 			Type:       "callback",
@@ -40,18 +40,9 @@ func GetPickerCallbacks() []structures.Method {
 }
 
 func PickEvery(params map[string]interface{}, ctx *structures.RunContext) {
-	//nodeCount := params["nodeCount"].(int)
-	//keys := params["keys"].([]int)
 	count := params["count"].(int)
 	units := params["units"].(string)
 	duration := timeMS(count, units)
-	// Is this a good idea?
-	// pioneered Inter-device communication
-	//after(duration)
-	//selection := pickNext(nodeCount, keys)
-	//keys = []int{selection}
-	//ctx.Executable.SetData("keys", keys)
-	//ctx.Executable.SetData("selection", selection)
 	go pickEvery(duration, len(ctx.CallNode.MainChildren), ctx)
 }
 
@@ -67,32 +58,8 @@ func pickEvery(duration int, nodeCount int, ctx *structures.RunContext) {
 }
 
 func PickRandom(params map[string]interface{}, ctx *structures.RunContext) {
-	//nodeCount := params["nodeCount"].(int)
 	pickType := params["type"].(string)
-	//keys := params["keys"].([]int)
 	pickRandom(len(ctx.CallNode.MainChildren), pickType, ctx)
-	//var selection int
-	//switch pickType {
-	//case "random":
-	//	selection = random(nodeCount)
-	//case "sequence":
-	//	sequenceList := params["sequence"].([]int)
-	//	selection = sequence(sequenceList, keys)
-	//	keys = append(keys, selection)
-	//	if len(keys) == len(sequenceList) {
-	//		keys = []int{}
-	//	}
-	//case "unique":
-	//	selection = unique(nodeCount, keys)
-	//	keys = append(keys, selection)
-	//	if len(keys) == nodeCount {
-	//		keys = []int{}
-	//	}
-	//}
-	//data := make(map[string]interface{})
-	//data["keys"] = keys
-	//data["selection"] = selection
-	//return -1.0, data
 }
 
 func pickRandom(nodeCount int, pickType string, ctx *structures.RunContext) {
@@ -127,20 +94,8 @@ func pickRandom(nodeCount int, pickType string, ctx *structures.RunContext) {
 }
 
 func PickOne(params map[string]interface{}, ctx *structures.RunContext) {
-	//nodeCount := params["nodeCount"].(int)
-	//keys := params["keys"].([]int)
 	inverted := params["inverted"].(bool)
 	pickOne(len(ctx.CallNode.MainChildren), inverted, ctx)
-	//var selection int
-	//if inverted {
-	//	selection = pickPrevious(len(ctx.CallNode.MainChildren), keys)
-	//} else {
-	//	selection = pickNext(nodeCount, keys)
-	//}
-	//keys = []int{selection}
-	//data := make(map[string]interface{})
-	//data["keys"] = keys
-	//data["selection"] = selection
 }
 
 func pickOne(nodeCount int, inverted bool, ctx *structures.RunContext) {
@@ -163,14 +118,8 @@ func pickOne(nodeCount int, inverted bool, ctx *structures.RunContext) {
 	lucky.Method.CallFunc(ctx.Executable, lucky)
 }
 
-func PickVal(params map[string]interface{}, ctx *structures.RunContext) {
-	//nodeCount := params["nodeCount"].(int)
-	//val := params["val"].(float64)
+func PickVal(_ map[string]interface{}, ctx *structures.RunContext) {
 	pickVal(len(ctx.CallNode.MainChildren), ctx)
-	//selection := valNext(val, nodeCount)
-	//data := make(map[string]interface{})
-	//data["selection"] = selection
-	//return -1.0, data
 }
 
 func pickVal(nodeCount int, ctx *structures.RunContext) {
@@ -189,17 +138,6 @@ func pickPrevious(nodeCount int, previous int) int {
 	return selection
 }
 
-//func pickPrevious(nodeCount int, previous int) int {
-//	if len(keys) == 0 {
-//		return nodeCount - 1
-//	}
-//	index := keys[0] - 1
-//	if index < 0 {
-//		index = nodeCount - 1
-//	}
-//	return index
-//}
-
 func valNext(val float64, nodeCount int) int {
 	sectionIndex := int(val * float64(nodeCount))
 	if sectionIndex >= nodeCount {
@@ -211,13 +149,6 @@ func valNext(val float64, nodeCount int) int {
 func pickNext(nodeCount int, previous int) int {
 	return (previous + 1) % nodeCount
 }
-
-//func pickNext(nodeCount int, keys []int) int {
-//	if len(keys) == 0 {
-//		return 0
-//	}
-//	return (keys[0] + 1) % nodeCount
-//}
 
 func unique(nodeCount int, keys []int) int {
 	var newKey int

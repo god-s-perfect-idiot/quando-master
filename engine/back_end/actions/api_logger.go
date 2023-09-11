@@ -9,11 +9,11 @@ type LoggerClient struct{}
 func GetLoggerActions() []structures.Method {
 	loggerClient := NewLogger()
 	return []structures.Method{
-		structures.Method{
+		{
 			Identifier: "quando.log",
 			Function:   loggerClient.Log,
 			Params: []structures.Param{
-				structures.Param{
+				{
 					Identifier: "text",
 					Type:       "STRING",
 				},

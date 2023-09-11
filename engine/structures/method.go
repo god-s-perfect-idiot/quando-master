@@ -66,11 +66,6 @@ func (m *Method) CallFunc(executable *Executable, node *CallNode) {
 		parameter = m.cleanParam(parameter, executable)
 		params[parameter.Identifier] = parameter.Value
 	}
-	//if m.IsArbiter() {
-	//	params["keys"] = executable.Data["keys"].([]int)
-	//	params["nodeCount"] = executable.Data["nodeCount"].(int)
-	//	params["sequence"] = executable.Data["sequence"].([]int)
-	//}
 	if m.DataKeys != nil {
 		for _, key := range m.DataKeys {
 			if executable.Data[key] != nil {
@@ -82,46 +77,6 @@ func (m *Method) CallFunc(executable *Executable, node *CallNode) {
 		Executable: executable,
 		CallNode:   node,
 	})
-	//if m.Type == "callback" && val != -1.0 {
-	//	executable.Val = val
-	//}
-	//if data != nil {
-	//	for k, v := range data {
-	//		executable.SetData(k, v)
-	//	}
-	//}
-}
-
-func (m *Method) Call(parameters []Parameter, executable *Executable) {
-	params := make(map[string]interface{})
-	params["callPipe"] = executable.CallPipe
-	params["val"] = executable.Val
-	for _, parameter := range parameters {
-		// Only binding early now. Fetch val from context later
-		parameter = m.cleanParam(parameter, executable)
-		params[parameter.Identifier] = parameter.Value
-	}
-	if m.IsArbiter() {
-		params["keys"] = executable.Data["keys"].([]int)
-		params["nodeCount"] = executable.Data["nodeCount"].(int)
-		params["sequence"] = executable.Data["sequence"].([]int)
-	}
-	if m.DataKeys != nil {
-		for _, key := range m.DataKeys {
-			if executable.Data[key] != nil {
-				params[key] = executable.Data[key]
-			}
-		}
-	}
-	val, data := m.Function.(func(map[string]interface{}) (float64, map[string]interface{}))(params)
-	if m.Type == "callback" && val != -1.0 {
-		executable.Val = val
-	}
-	if data != nil {
-		for k, v := range data {
-			executable.SetData(k, v)
-		}
-	}
 }
 
 func (m *Method) IsIterator() bool {

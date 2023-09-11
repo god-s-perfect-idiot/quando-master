@@ -6,7 +6,6 @@ require (
 	github.com/fstanis/screenresolution v0.0.0-20190527020317-869904d15333
 	github.com/getlantern/systray v1.2.1
 	github.com/go-vgo/robotgo v0.100.10
-	github.com/micmonay/keybd_event v1.1.1
 	github.com/robotn/gohook v0.41.0
 	github.com/rs/cors v1.9.0
 	github.com/shomali11/util v0.0.0-20220717175126-f0771b70947f

@@ -12,7 +12,7 @@ type MessengerClient struct {
 func GetMessengerActions() []structures.Method {
 	messengerClient := NewMessenger()
 	return []structures.Method{
-		structures.Method{
+		{
 			Identifier: "quando.message.send",
 			Function:   messengerClient.Send,
 			Type:       "action",

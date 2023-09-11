@@ -11,14 +11,14 @@ type KeyboardClient struct {
 func GetKeyboardActions() []structures.Method {
 	keyboardClient := NewKeyboard()
 	return []structures.Method{
-		structures.Method{
+		{
 			Identifier: "quando.control.key",
 			Function:   keyboardClient.Key,
 			Type:       "action",
 			Iterator:   false,
 			Arbiter:    false,
 		},
-		structures.Method{
+		{
 			Identifier: "quando.control.type",
 			Function:   keyboardClient.Type,
 			Type:       "action",

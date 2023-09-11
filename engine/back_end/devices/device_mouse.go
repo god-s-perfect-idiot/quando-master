@@ -3,28 +3,27 @@ package devices
 import (
 	"github.com/fstanis/screenresolution"
 	hook "github.com/robotn/gohook"
-	"math"
 	"quando/engine/structures"
 	"runtime"
 )
 
 func GetMouseCallbacks() []structures.Method {
 	return []structures.Method{
-		structures.Method{
+		{
 			Identifier: "quando.mouse.handleX",
 			Function:   MouseMoveX,
 			Type:       "callback",
 			Iterator:   true,
 			Arbiter:    false,
 		},
-		structures.Method{
+		{
 			Identifier: "quando.mouse.handleY",
 			Function:   MouseMoveY,
 			Type:       "callback",
 			Iterator:   true,
 			Arbiter:    false,
 		},
-		structures.Method{
+		{
 			Identifier: "quando.mouse.handleClick",
 			Function:   MouseClick,
 			Type:       "callback",
@@ -69,40 +68,6 @@ func MouseClick(params map[string]interface{}, runContext *structures.RunContext
 func getScreenSize() (int, int) {
 	res := screenresolution.GetPrimary()
 	return res.Height, res.Width
-}
-
-func mouseMoveLinux() {
-	var prevX *int16
-	var prevY *int16
-	hook.Register(hook.MouseMove, []string{}, func(e hook.Event) {
-		if prevX != nil && prevY != nil {
-			xDiff := e.X - *prevX
-			yDiff := e.Y - *prevY
-			if xDiff > 10 || xDiff < -10 || yDiff > 10 || yDiff < -10 {
-				if math.Abs(float64(xDiff)) > math.Abs(float64(yDiff)) {
-					if xDiff > 0 {
-						hook.End()
-					} else {
-						hook.End()
-					}
-					prevX = &e.X
-				} else {
-					if yDiff > 0 {
-						hook.End()
-					} else {
-						hook.End()
-					}
-					prevY = &e.Y
-				}
-			}
-		} else {
-			prevY = &e.Y
-			prevX = &e.X
-		}
-	})
-
-	s := hook.Start()
-	<-hook.Process(s)
 }
 
 func mouseClickLinux(key string, runContext *structures.RunContext) {

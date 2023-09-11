@@ -77,6 +77,7 @@ func (s *Scanner) split() []string {
 }
 
 // base class overrides
+
 func (s *Scanner) Scan() bool {
 	return s.scanner.Scan()
 }

@@ -9,7 +9,7 @@ import (
 
 func GetKeyboardCallbacks() []structures.Method {
 	return []structures.Method{
-		structures.Method{
+		{
 			Identifier: "quando.key.handleKey",
 			Function:   KeyPress,
 			Type:       "callback",
@@ -31,6 +31,9 @@ func KeyPress(params map[string]interface{}, runContext *structures.RunContext) 
 	}
 }
 
+// TODO fix parallel execution
+
+// This hijacks control from event loop
 func keyPressLinux(key string, ctrl bool, alt bool, runContext *structures.RunContext) {
 	keys := []string{
 		key,
@@ -50,11 +53,6 @@ func keyPressLinux(key string, ctrl bool, alt bool, runContext *structures.RunCo
 				child.Method.CallFunc(runContext.Executable, child)
 			}
 		}
-		//fmt.Println("received trigger")
-		//hook.End()
-		//for _, child := range runContext.CallNode.MainChildren {
-		//	child.Method.CallFunc(runContext.Executable, child)
-		//}
 	})
 
 	s := hook.Start()

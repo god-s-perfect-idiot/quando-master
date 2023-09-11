@@ -5,19 +5,14 @@ import (
 )
 
 const (
-	// Token types
-	// Terminal tokens
 	EOL = iota
 	EOF
 
-	// Redundant tokens
 	EMPTY
 	WHITESPACE
 
-	// Operations
 	ASSIGN
 
-	// Literals
 	STRING
 	NUMBER
 	FLOAT
@@ -25,10 +20,7 @@ const (
 	CALLBACK
 	VAL
 
-	// Delimiters
 	COMMA
-	OPEN_BRACE
-	CLOSE_BRACE
 )
 
 type Token struct {
@@ -37,20 +29,18 @@ type Token struct {
 }
 
 var Tokens = []string{
-	EOL:         "EOL",
-	EOF:         "EOF",
-	EMPTY:       "",
-	WHITESPACE:  " ",
-	ASSIGN:      "=",
-	STRING:      "STRING",
-	NUMBER:      "NUMBER",
-	BOOLEAN:     "BOOLEAN",
-	CALLBACK:    "CALLBACK",
-	FLOAT:       "FLOAT",
-	VAL:         "VAL",
-	COMMA:       ",",
-	OPEN_BRACE:  "{",
-	CLOSE_BRACE: "}",
+	EOL:        "EOL",
+	EOF:        "EOF",
+	EMPTY:      "",
+	WHITESPACE: " ",
+	ASSIGN:     "=",
+	STRING:     "STRING",
+	NUMBER:     "NUMBER",
+	BOOLEAN:    "BOOLEAN",
+	CALLBACK:   "CALLBACK",
+	FLOAT:      "FLOAT",
+	VAL:        "VAL",
+	COMMA:      ",",
 }
 
 type Analyser struct {
@@ -135,24 +125,4 @@ func (l *Analyser) Scan() *structures.Executable {
 	hashID := structures.GetHash(l.scanner.sourceCode)
 	scriptExecutable := structures.NewExecutionContext(hashID, invocationTable, callGraph)
 	return scriptExecutable
-}
-
-func Run() {
-	const testQuery = `
-	quando.title text='CLICKED', append=false
-	quando.addButton text='click', up_down='down', callback = {
-		quando.title text='CLICKED', append=false, callback = {
-			quando.title text='CLICKED', append=false		
-		}
-		quando.title text='CLICKED', append=false, callback = {
-			quando.title text='CLICKED', append=false, callback = {
-				quando.title text='CLICKED', append=false		
-			}
-		}
-	}
-	quando.title text='CLICKED', append=false
-	quando.title text='CLICKED', append=false
-	`
-	analyser := NewAnalyser(testQuery)
-	analyser.Scan()
 }

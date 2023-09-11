@@ -15,6 +15,7 @@ func (l *LookupTable) Append(api Method) {
 }
 
 // TODO optimize this
+
 func (l *LookupTable) GetAPI(identifier string) (Method, bool) {
 	for _, method := range l.Methods {
 		if method.Identifier == identifier {

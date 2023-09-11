@@ -32,14 +32,22 @@ func runScript(script string, callPipe *chan map[string]interface{}) {
 func readScript(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		r.ParseForm()
+		err := r.ParseForm()
+		if err != nil {
+			fmt.Println(err)
+			w.WriteHeader(http.StatusBadRequest)
+		}
 		script := r.Form.Get("script")
 		fmt.Println("Received POST request with body:", script)
 		if script != "" {
 			go runScript(script, callPipe)
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("Script received"))
+		_, err = w.Write([]byte("Script received"))
+		if err != nil {
+			fmt.Println(err)
+			w.WriteHeader(http.StatusForbidden)
+		}
 	default:
 		w.WriteHeader(http.StatusNotImplemented)
 	}
@@ -48,7 +56,11 @@ func readScript(w http.ResponseWriter, r *http.Request) {
 func crashScript(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		r.ParseForm()
+		err := r.ParseForm()
+		if err != nil {
+			fmt.Println(err)
+			w.WriteHeader(http.StatusBadRequest)
+		}
 		script := r.Form.Get("script")
 		fmt.Println("Received POST request with body:", script)
 		if script != "" {
@@ -58,7 +70,11 @@ func crashScript(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("Script Termination Scheduled"))
+		_, err = w.Write([]byte("Script Termination Scheduled"))
+		if err != nil {
+			fmt.Println(err)
+			w.WriteHeader(http.StatusForbidden)
+		}
 	}
 }
 

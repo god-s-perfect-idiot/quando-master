@@ -7,13 +7,13 @@ import (
 )
 
 var definitions = []structures.Definition{
-	structures.Definition{
+	{
 		Line: 0,
 		Type: "invocation",
 		Signature: structures.CallSignature{
 			MethodIdentifier: "dummy",
 			Parameters: []structures.Parameter{
-				structures.Parameter{
+				{
 					Identifier: "dummy",
 					Type:       "STRING",
 					Value:      "\"dummy\"",
@@ -24,12 +24,14 @@ var definitions = []structures.Definition{
 }
 var callgraph = structures.ConstructCallGraph(definitions)
 var invocations = structures.GenerateInvocationTable(definitions)
+var callPipe = make(chan map[string]interface{})
 var essence = structures.Executable{
 	DependencyGraph: &callgraph,
 	Invocations:     &invocations,
 	CallStack:       structures.NewStack(),
 	Context:         context.Background(),
 	Val:             0.0,
+	CallPipe:        &callPipe,
 }
 var mockedAPIDummy1 = structures.Method{
 	Identifier: "dummy",
@@ -49,6 +51,7 @@ var mockedAPIDummy2 = structures.Method{
 func TestExecute(t *testing.T) {
 	essence.DependencyGraph.AttachMethod("dummy", mockedAPIDummy1)
 	Execute(&essence)
+	println(essence.Val)
 	if essence.Val != 0.1111 {
 		t.Error("Executable should have val 0.1111")
 	}

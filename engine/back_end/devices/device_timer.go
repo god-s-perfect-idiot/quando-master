@@ -6,28 +6,28 @@ import (
 
 func GetTimerCallbacks() []structures.Method {
 	return []structures.Method{
-		structures.Method{
+		{
 			Identifier: "quando.time.after",
 			Function:   After,
 			Type:       "callback",
 			Iterator:   false,
 			Arbiter:    false,
 		},
-		structures.Method{
+		{
 			Identifier: "quando.time.every",
 			Function:   Every,
 			Type:       "callback",
 			Iterator:   true,
 			Arbiter:    false,
 		},
-		structures.Method{
+		{
 			Identifier: "quando.time.per",
 			Function:   Per,
 			Type:       "callback",
 			Iterator:   true,
 			Arbiter:    false,
 		},
-		structures.Method{
+		{
 			Identifier: "quando.time.vary",
 			Function:   VaryOver,
 			Type:       "callback",
@@ -85,14 +85,6 @@ func per(duration int, ctx *structures.RunContext) {
 	}
 }
 
-//func ValStep(params map[string]interface{}) (float64, map[string]interface{}) {
-//	val := params["val"].(float64)
-//	scale := params["scale"].(float64)
-//	forward := params["forward"].(bool)
-//	val = valStep(forward, val, scale)
-//	return val, nil
-//}
-
 func VaryOver(params map[string]interface{}, ctx *structures.RunContext) {
 	count := params["count"].(int)
 	units := params["units"].(string)
@@ -103,40 +95,10 @@ func VaryOver(params map[string]interface{}, ctx *structures.RunContext) {
 	duration := timeMS(1, timesUnits)
 	duration = duration / times
 	durationTotal := timeMS(count, units)
-	varyOver(duration, durationTotal, times, units, mode, inverted, ctx)
-
-	//invert := params["invert"].(bool)
-	//if invert {
-	//	inverted = !inverted
-	//}
-	//totalTimes := times * durationTotal / 1000
-	//newVal := valStep(inverted, val, totalTimes, mode)
-	//switch mode {
-	//case "once":
-	//	if newVal > 1.0 {
-	//		newVal = 1.0
-	//	}
-	//	if newVal < 0.0 {
-	//		newVal = 0.0
-	//	}
-	//case "repeat":
-	//	if newVal > 1.0 {
-	//		newVal = 0.0
-	//	}
-	//	if newVal < 0.0 {
-	//		newVal = 1.0
-	//	}
-	//case "seesaw":
-	//	if newVal >= float64(1.0) || newVal <= float64(0.0) {
-	//		invert = !invert
-	//	}
-	//}
-	//data := make(map[string]interface{})
-	//data["invert"] = invert
-	//return newVal, data
+	varyOver(duration, durationTotal, times, mode, inverted, ctx)
 }
 
-func varyOver(duration int, durationTotal int, times int, units string, mode string, inverted bool, ctx *structures.RunContext) {
+func varyOver(duration int, durationTotal int, times int, mode string, inverted bool, ctx *structures.RunContext) {
 	totalTimes := times * durationTotal / 1000
 	var val float64
 	if inverted {
