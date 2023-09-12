@@ -23,7 +23,7 @@ func runScript(script string, callPipe *chan map[string]interface{}) {
 		executable = codeAnalyser.Scan()
 		executable.ConnectCallPipe(callPipe)
 		codeGenerator := generator.NewGenerator()
-		codeGenerator.GenerateCode(*executable)
+		codeGenerator.AttachHandler(*executable)
 		memory.Set(hash, executable)
 	}
 	core.Execute(executable)

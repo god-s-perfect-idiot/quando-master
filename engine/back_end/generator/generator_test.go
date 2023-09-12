@@ -93,7 +93,7 @@ func TestGeneratorGenerateCode(t *testing.T) {
 			},
 		},
 	}
-	g.GenerateCode(essence)
+	g.AttachHandler(essence)
 	if essence.DependencyGraph.GetRoots()[0].Method.Identifier != "quando.testCallback" {
 		t.Error("Executable dependency graph should have quando.test as root")
 	}

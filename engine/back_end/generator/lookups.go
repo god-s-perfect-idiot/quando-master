@@ -38,5 +38,5 @@ func Run() {
 	essence := codeAnalyser.Scan()
 	println(essence)
 	generator := NewGenerator()
-	generator.GenerateCode(*essence)
+	generator.AttachHandler(*essence)
 }
